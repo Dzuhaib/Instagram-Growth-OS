@@ -1,0 +1,196 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@theme {
+  --color-bg-base: #F8FAFC;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-raised: #F1F5F9;
+  --color-bg-overlay: rgba(10, 15, 30, 0.03);
+  --color-bg-overlay-hover: rgba(10, 15, 30, 0.06);
+
+  --color-border-subtle: rgba(10, 15, 30, 0.08);
+  --color-border-strong: rgba(10, 15, 30, 0.15);
+  --color-border-accent: rgba(24, 95, 165, 0.3);
+
+  --color-text-contrast: #0A0F1E;
+  --color-text-primary: #1E293B;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #64748B;
+
+  --color-accent-cyan: #185FA5;
+  --color-accent-cyan-dim: rgba(24, 95, 165, 0.1);
+  --color-accent-cyan-glow: rgba(24, 95, 165, 0.3);
+
+  --color-accent-violet: #534AB7;
+  --color-accent-violet-dim: rgba(83, 74, 183, 0.1);
+
+  --color-green: #059669;
+  --color-green-dim: rgba(5, 150, 105, 0.1);
+
+  --color-amber: #D97706;
+  --color-amber-dim: rgba(217, 119, 6, 0.1);
+
+  --color-red: #DC2626;
+  --color-red-dim: rgba(220, 38, 38, 0.1);
+
+  --font-heading: "Outfit", sans-serif;
+  --font-sans: "Inter", sans-serif;
+
+  /* Re-maps backward compatibility for var(--color) used dynamically */
+  --bg-base: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-raised: #F1F5F9;
+  --bg-overlay: rgba(10, 15, 30, 0.03);
+  --bg-overlay-hover: rgba(10, 15, 30, 0.06);
+
+  --border-subtle: rgba(10, 15, 30, 0.08);
+  --border-strong: rgba(10, 15, 30, 0.15);
+  --border-accent: rgba(24, 95, 165, 0.3);
+
+  --text-contrast: #0A0F1E;
+  --text-primary: #1E293B;
+  --text-secondary: #475569;
+  --text-tertiary: #64748B;
+
+  --accent-cyan: #185FA5;
+  --accent-cyan-dim: rgba(24, 95, 165, 0.1);
+  --accent-cyan-glow: rgba(24, 95, 165, 0.3);
+
+  --accent-violet: #534AB7;
+  --green: #059669;
+  --green-dim: rgba(5, 150, 105, 0.1);
+  --amber: #D97706;
+  --amber-dim: rgba(217, 119, 6, 0.1);
+  --red: #DC2626;
+  --red-dim: rgba(220, 38, 38, 0.1);
+}
+
+:root {
+  /* Retain for older custom classes if needed */
+  --bg-base: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-raised: #F1F5F9;
+  --bg-overlay: rgba(10, 15, 30, 0.03);
+  --bg-overlay-hover: rgba(10, 15, 30, 0.06);
+
+  --border-subtle: rgba(10, 15, 30, 0.08);
+  --border-strong: rgba(10, 15, 30, 0.15);
+  --border-accent: rgba(24, 95, 165, 0.3);
+
+  --text-contrast: #0A0F1E;
+  --text-primary: #1E293B;
+  --text-secondary: #475569;
+  --text-tertiary: #64748B;
+
+  --accent-cyan: #185FA5;
+  --accent-cyan-dim: rgba(24, 95, 165, 0.1);
+  --accent-cyan-glow: rgba(24, 95, 165, 0.3);
+
+  --accent-violet: #534AB7;
+  --accent-violet-dim: rgba(83, 74, 183, 0.1);
+
+  --green: #059669;
+  --green-dim: rgba(5, 150, 105, 0.1);
+
+  --amber: #D97706;
+  --amber-dim: rgba(217, 119, 6, 0.1);
+
+  --red: #DC2626;
+  --red-dim: rgba(220, 38, 38, 0.1);
+}
+
+body {
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+  color: var(--color-text-contrast);
+  margin: 0;
+}
+
+/* Premium Surface Components */
+.surface-glass {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.surface-glass::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  opacity: 0.5;
+}
+
+.card-hover-effect {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.card-hover-effect:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Base Interactions extracted for purity */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-gradient-to-b from-text-contrast to-[#1E293B] text-bg-base font-semibold text-sm px-5 py-2.5 rounded-full border border-text-contrast/20 shadow-[0_2px_8px_rgba(10,15,30,0.15)] transition-all hover:bg-[#1E293B] hover:-translate-y-[1px] hover:shadow-[0_4px_12px_rgba(10,15,30,0.25)];
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-bg-overlay text-text-primary font-medium text-sm px-5 py-2.5 rounded-full border border-border-subtle transition-all backdrop-blur-md hover:bg-bg-overlay-hover hover:border-border-strong hover:text-text-contrast;
+  }
+
+  .btn-accent {
+    @apply inline-flex items-center justify-center gap-2 bg-gradient-to-br from-accent-cyan to-[#0077FF] text-white font-semibold text-sm px-5 py-2.5 rounded-full border-none shadow-[0_4px_14px_var(--color-accent-cyan-glow),inset_0_1px_0_rgba(255,255,255,0.4)] transition-all hover:-translate-y-[1px] hover:shadow-[0_6px_20px_var(--color-accent-cyan-glow),inset_0_1px_0_rgba(255,255,255,0.5)];
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 bg-bg-base border border-border-subtle rounded-xl text-text-contrast text-sm transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:outline-none focus:border-border-accent focus:shadow-[inset_0_2px_4px_rgba(0,0,0,0.05),0_0_0_1px_var(--color-border-accent)];
+  }
+}
+
+/* Patterns */
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+  -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+}
+
+/* Animations that tailwindcss-animate leverages for keyframes if missing, but we rely on plugin */
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
