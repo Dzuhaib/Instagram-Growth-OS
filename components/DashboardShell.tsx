@@ -64,7 +64,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           className={`group flex min-h-[72px] items-center border-b border-border-subtle cursor-pointer ${collapsed ? "justify-center px-4" : "px-6 gap-3"}`}
         >
           <div className="w-6 h-6 rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] flex shrink-0 items-center justify-center transition-transform duration-500 group-hover:rotate-180 shadow-sm">
-            <div className="w-2.5 h-2.5 rounded-full bg-bg-base"></div>
+            <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
           </div>
           {!collapsed && (
             <div className="font-heading text-[16px] font-bold tracking-tight text-gradient-instagram pt-0.5">

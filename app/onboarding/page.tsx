@@ -97,7 +97,7 @@ export default function OnboardingPage() {
               </div>
 
               <button
-                className="w-full h-12 rounded-xl bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] text-white font-bold text-[15px] shadow-[0_4px_20px_rgba(225,48,108,0.3)] transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full h-12 rounded-xl btn-gradient text-white font-bold text-[15px] shadow-[0_4px_20px_rgba(225,48,108,0.3)] transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50"
                 disabled={!goal}
                 onClick={() => setStep(2)}
               >

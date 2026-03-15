@@ -62,11 +62,9 @@ export default function LoginPage() {
           animate={{ opacity: 1, x: 0 }}
           className="relative z-10"
         >
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-accent-pink via-accent-purple to-accent-orange p-[2.5px] shadow-sm group-hover:scale-110 transition-transform duration-500">
-                <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)]" />
-                </div>
+          <Link href="/" className="flex items-center gap-2 cursor-pointer group">
+            <div className="w-8 h-8 rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] flex items-center justify-center transition-transform duration-500 group-hover:rotate-180 shadow-sm">
+                <div className="w-3.5 h-3.5 rounded-full bg-white shadow-sm" />
             </div>
             <span className="text-2xl font-heading font-black tracking-tighter text-text-contrast">GrowthOS</span>
           </Link>
@@ -175,7 +173,8 @@ export default function LoginPage() {
               className="group relative w-full h-13 rounded-xl bg-text-contrast text-white font-black text-[14px] uppercase tracking-wider overflow-hidden transition-all active:scale-[0.98] shadow-lg shadow-text-contrast/10"
               onClick={() => router.push("/dashboard")}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-accent-pink to-accent-purple opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] transition-opacity" />
+              <div className="absolute inset-0 bg-[linear-gradient(45deg,#bc1888_0%,#cc2366_25%,#dc2743_50%,#e6683c_75%,#f09433_100%)] opacity-0 group-hover:opacity-100 transition-opacity" />
               <span className="relative z-10 flex items-center justify-center gap-2 transition-colors">
                 Initialize Dashboard <ArrowRight size={17} />
               </span>

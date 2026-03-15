@@ -152,7 +152,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Mockup Main Content */}
-                <div className="flex-1 flex flex-col min-w-0 h-[400px] md:h-[600px]">
+                <div className="flex-1 flex flex-col min-w-0 h-[550px] md:h-[600px]">
                   {/* Header inside mockup */}
                   <div className="h-16 border-b border-text-contrast/5 flex items-center justify-between px-8">
                     <div className="flex gap-4">
@@ -165,25 +165,25 @@ export default function LandingPage() {
                     </div>
                   </div>
 
-                  <div className="flex-1 p-6 md:p-10 overflow-hidden flex flex-col gap-8">
+                  <div className="flex-1 p-4 md:p-10 overflow-hidden flex flex-col gap-4 md:gap-8">
                     {/* Top Stats */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                       {[
                         { label: "Reach", val: "2.4M", trend: "+12%" },
                         { label: "Engagement", val: "8.4%", trend: "+2.1%" },
                         { label: "Predictive Score", val: "94/100", trend: "High" },
                         { label: "Niche Rank", val: "#4", trend: "Top 0.1%" }
                       ].map((stat, i) => (
-                        <div key={i} className="p-4 rounded-2xl border border-text-contrast/5 bg-bg-surface/50">
-                          <div className="text-[10px] uppercase tracking-widest text-text-tertiary mb-2 font-bold">{stat.label}</div>
-                          <div className="text-xl font-heading font-medium text-text-contrast">{stat.val}</div>
-                          <div className="text-[10px] text-accent-pink mt-1 font-bold">{stat.trend}</div>
+                        <div key={i} className="p-3 md:p-4 rounded-2xl border border-text-contrast/5 bg-bg-surface/50">
+                          <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-text-tertiary mb-1 md:mb-2 font-bold">{stat.label}</div>
+                          <div className="text-lg md:text-xl font-heading font-medium text-text-contrast">{stat.val}</div>
+                          <div className="text-[9px] md:text-[10px] text-accent-pink mt-0.5 md:mt-1 font-bold">{stat.trend}</div>
                         </div>
                       ))}
                     </div>
 
                     {/* Big Visualization */}
-                    <div className="flex-1 min-h-0 rounded-3xl border border-text-contrast/5 bg-bg-surface/30 p-8 flex flex-col gap-6 relative group/chart">
+                    <div className="flex-1 min-h-0 rounded-3xl border border-text-contrast/5 bg-bg-surface/30 p-4 md:p-8 flex flex-col gap-4 md:gap-6 relative group/chart">
                       <div className="flex items-center justify-between relative z-10">
                         <div>
                           <div className="text-sm font-heading font-medium text-text-contrast">Audience Expansion Velocity</div>
@@ -239,7 +239,7 @@ export default function LandingPage() {
                       </div>
 
                       {/* AI Feedback Chips */}
-                      <div className="absolute right-8 top-24 space-y-3 pointer-events-none">
+                      <div className="absolute right-4 md:right-8 top-12 md:top-24 space-y-2 md:space-y-3 pointer-events-none hidden sm:block">
                          {[
                            { t: "Viral potential detected", c: "bg-accent-pink" },
                            { t: "Optimal hook window found", c: "bg-accent-purple" },
@@ -459,12 +459,12 @@ export default function LandingPage() {
       {/* MINIMAL FOOTER */}
       <footer id="company" className="mt-24 md:mt-32 border-t border-text-contrast/5 bg-bg-raised relative z-10">
         <div className="mx-auto max-w-5xl px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] flex items-center justify-center shadow-sm">
+          <Link href="/" className="flex items-center gap-2 cursor-pointer group">
+            <div className="w-5 h-5 rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] flex items-center justify-center transition-transform duration-500 group-hover:rotate-180 shadow-sm">
               <div className="w-2 h-2 rounded-full bg-white"></div>
             </div>
             <span className="font-heading text-[16px] font-bold text-gradient-instagram pt-0.5">GrowthOS</span>
-          </div>
+          </Link>
           
           <div className="flex flex-wrap items-center justify-center md:justify-end gap-6 md:gap-8 text-[13px] font-medium text-text-secondary">
             <Link href="/contact" className="hover:text-text-contrast transition-colors">Contact</Link>
