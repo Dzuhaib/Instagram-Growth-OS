@@ -1,73 +1,202 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Sparkles, ArrowRight, Eye, EyeOff } from "lucide-react";
+import { Sparkles, ArrowRight, Eye, EyeOff, Star, Quote, ChevronLeft, Instagram, Lock } from "lucide-react";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+
+const REVIEWS = [
+  {
+    id: 1,
+    text: "GrowthOS completely changed how I approach my content. The AI scoring is scary accurate.",
+    author: "Sarah Jenkins",
+    role: "Fitness Creator",
+    rating: 5,
+  },
+  {
+    id: 2,
+    text: "Switched from manually tracking to this. In 3 months, my reach increased by 400%. Unreal.",
+    author: "Marco Rossi",
+    role: "Chef & Food Blogger",
+    rating: 5,
+  },
+  {
+    id: 3,
+    text: "The best ROI I've ever seen on a tool. It pays for itself in just one viral reel.",
+    author: "Alex Rivers",
+    role: "Digital Nomad",
+    rating: 5,
+  },
+];
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
+  const [currentReview, setCurrentReview] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentReview((prev) => (prev + 1) % REVIEWS.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <div
-      className="dot-pattern"
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "40px 20px",
-        background: "var(--bg-primary)",
-      }}
-    >
-      <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "40px", textDecoration: "none" }}>
-        <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "linear-gradient(135deg, #00D4FF 0%, #0099CC 100%)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <Sparkles size={20} color="#0A0F1E" strokeWidth={2.5} />
-        </div>
-        <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 800, fontSize: "20px", color: "var(--text-primary)" }}>GrowthOS</span>
-      </Link>
+    <div className="flex h-screen bg-white overflow-hidden selection:bg-accent-pink/10">
+      {/* Background Animated Elements */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent-pink/[0.03] rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent-purple/[0.03] rounded-full blur-[120px]" />
+      </div>
 
-      <div className="glass-card" style={{ width: "100%", maxWidth: "440px", padding: "48px" }}>
-        <h1 style={{ fontSize: "28px", fontWeight: 800, marginBottom: "8px", fontFamily: "Outfit, sans-serif" }}>Welcome back</h1>
-        <p style={{ color: "var(--text-secondary)", fontSize: "15px", marginBottom: "32px" }}>Sign in to your GrowthOS account</p>
+      {/* Left Side: Brand Visual & Social Proof */}
+      <div className="hidden lg:flex flex-1 relative flex-col justify-between p-16 overflow-hidden bg-bg-base/30">
+        {/* Aesthetic Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(10,15,30,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(10,15,30,0.02)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] opacity-50" />
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "24px" }}>
-          <div>
-            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, marginBottom: "8px", color: "var(--text-secondary)" }}>Email</label>
-            <input className="input-field" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-          <div>
-            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, marginBottom: "8px", color: "var(--text-secondary)" }}>Password</label>
-            <div style={{ position: "relative" }}>
-              <input className="input-field" type={showPw ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} style={{ paddingRight: "44px" }} />
-              <button onClick={() => setShowPw(!showPw)} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}>
-                {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "24px" }}>
-          <a href="#" style={{ fontSize: "13px", color: "var(--accent)", textDecoration: "none" }}>Forgot password?</a>
-        </div>
-
-        <button
-          className="btn-primary"
-          style={{ width: "100%", justifyContent: "center", marginBottom: "16px" }}
-          onClick={() => router.push("/dashboard")}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="relative z-10"
         >
-          Sign In <ArrowRight size={16} />
-        </button>
-
-        <p style={{ textAlign: "center", fontSize: "13px", color: "var(--text-muted)" }}>
-          Don't have an account?{" "}
-          <Link href="/onboarding" style={{ color: "var(--accent)", textDecoration: "none" }}>
-            Start free trial
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-accent-pink via-accent-purple to-accent-orange p-[2.5px] shadow-sm group-hover:scale-110 transition-transform duration-500">
+                <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)]" />
+                </div>
+            </div>
+            <span className="text-2xl font-heading font-black tracking-tighter text-text-contrast">GrowthOS</span>
           </Link>
-        </p>
+        </motion.div>
+
+        <div className="relative z-10 max-w-lg">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentReview}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="space-y-6"
+            >
+              <Quote className="text-accent-pink/20" size={40} />
+              <h2 className="text-3xl font-heading font-bold text-text-contrast leading-tight tracking-tight">
+                {REVIEWS[currentReview].text}
+              </h2>
+              <div className="flex items-center gap-4">
+                <div className="w-11 h-11 rounded-full bg-accent-pink/10 border border-accent-pink/10 flex items-center justify-center text-lg font-bold text-accent-pink">
+                  {REVIEWS[currentReview].author[0]}
+                </div>
+                <div>
+                  <div className="text-[17px] font-bold text-text-contrast">{REVIEWS[currentReview].author}</div>
+                  <div className="text-[14px] text-text-tertiary">{REVIEWS[currentReview].role}</div>
+                </div>
+                <div className="ml-auto flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={13} fill="#FCAF45" className="text-[#FCAF45]" />
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+
+          <div className="flex gap-2.5 mt-10">
+            {REVIEWS.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentReview(idx)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentReview ? 'w-9 bg-accent-pink' : 'w-1.5 bg-border-strong/40'}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="relative z-10 flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-text-tertiary opacity-70">
+          <div className="flex items-center gap-2"><Lock size={12} /> Meta Verified</div>
+          <div className="flex items-center gap-2"><Instagram size={12} /> Official API</div>
+          <div className="ml-auto">© 2026 GrowthOS</div>
+        </div>
+      </div>
+
+      {/* Right Side: Professional Login Form */}
+      <div className="w-full lg:w-[540px] h-full bg-white border-l border-border-subtle flex items-center justify-center p-8 lg:p-12 xl:p-20 relative z-10">
+        <div className="w-full max-w-sm">
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <div className="mb-10 text-center lg:text-left">
+              <h1 className="text-3xl font-heading font-black text-text-contrast mb-3 tracking-tighter">Sign In</h1>
+              <p className="text-[16px] text-text-secondary leading-relaxed font-medium">Access your growth command center.</p>
+            </div>
+
+            <div className="space-y-5 mb-8">
+              <div className="group">
+                <label className="block text-[11px] font-black uppercase tracking-[0.15em] text-text-tertiary mb-2.5 group-focus-within:text-accent-pink transition-colors">Business Email</label>
+                <div className="relative">
+                  <input 
+                    className="w-full h-13 px-4 rounded-xl bg-bg-base border border-border-subtle text-text-contrast outline-none focus:border-accent-pink/40 focus:bg-white transition-all shadow-sm font-medium placeholder:text-text-tertiary/50" 
+                    type="email" 
+                    placeholder="name@company.com" 
+                    value={email} 
+                    onChange={(e) => setEmail(e.target.value)} 
+                  />
+                </div>
+              </div>
+
+              <div className="group">
+                <div className="flex items-center justify-between mb-2.5">
+                  <label className="block text-[11px] font-black uppercase tracking-[0.15em] text-text-tertiary group-focus-within:text-accent-pink transition-colors">Security Key</label>
+                  <button className="text-[11px] font-bold uppercase tracking-widest text-accent-pink hover:text-accent-purple transition-colors">Forgot?</button>
+                </div>
+                <div className="relative">
+                  <input 
+                    className="w-full h-13 px-4 pr-12 rounded-xl bg-bg-base border border-border-subtle text-text-contrast outline-none focus:border-accent-pink/40 focus:bg-white transition-all shadow-sm font-medium placeholder:text-text-tertiary/50" 
+                    type={showPw ? "text" : "password"} 
+                    placeholder="••••••••" 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)} 
+                  />
+                  <button 
+                    onClick={() => setShowPw(!showPw)} 
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text-contrast transition-colors"
+                  >
+                    {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <button
+              className="group relative w-full h-13 rounded-xl bg-text-contrast text-white font-black text-[14px] uppercase tracking-wider overflow-hidden transition-all active:scale-[0.98] shadow-lg shadow-text-contrast/10"
+              onClick={() => router.push("/dashboard")}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-accent-pink to-accent-purple opacity-0 group-hover:opacity-100 transition-opacity" />
+              <span className="relative z-10 flex items-center justify-center gap-2 transition-colors">
+                Initialize Dashboard <ArrowRight size={17} />
+              </span>
+            </button>
+
+            <div className="mt-10 pt-8 border-t border-border-subtle flex flex-col items-center gap-6">
+               <p className="text-[14px] text-text-tertiary font-medium">
+                Don't have a workspace?{" "}
+                <Link href="/onboarding" className="font-bold text-text-contrast hover:text-accent-pink transition-colors">
+                  Create Account
+                </Link>
+              </p>
+              
+              <div className="flex items-center gap-3">
+                 <div className="h-px w-6 bg-border-subtle" />
+                 <span className="text-[10px] uppercase font-bold tracking-widest text-text-tertiary">Trusted by 5,000+ creators</span>
+                 <div className="h-px w-6 bg-border-subtle" />
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </div>
   );

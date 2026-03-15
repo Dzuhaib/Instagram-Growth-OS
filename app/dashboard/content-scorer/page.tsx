@@ -81,7 +81,7 @@ export default function ContentScorerPage() {
             <div className="mb-6">
               <label className="mb-3 block text-[13px] font-semibold text-[var(--text-secondary)]">Caption & Hook</label>
               <textarea
-                className="input-field min-h-[160px] bg-[var(--bg-raised)] font-['Inter'] leading-relaxed shadow-inner focus:bg-[var(--bg-surface)] focus:ring-1 focus:ring-[var(--accent-cyan)] focus:border-transparent transition-all"
+                className="input-field min-h-[160px] bg-bg-raised font-sans leading-relaxed shadow-inner focus:bg-bg-surface focus:ring-1 focus:ring-accent-pink focus:border-transparent transition-all"
                 placeholder="Paste your caption here... The AI pays extra attention to the first 3 lines (the hook)."
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
@@ -102,9 +102,9 @@ export default function ContentScorerPage() {
                     </button>
                   </div>
                 ) : (
-                  <label className="flex h-[120px] w-24 shrink-0 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-[var(--border-strong)] bg-[var(--bg-raised)] transition-colors hover:border-[var(--accent-cyan)] hover:bg-[var(--accent-cyan-dim)]">
-                    <ImageIcon size={20} className="text-[var(--text-secondary)]" />
-                    <span className="text-[11px] font-medium text-[var(--text-secondary)]">Upload</span>
+                  <label className="flex h-[120px] w-24 shrink-0 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border-strong bg-bg-raised transition-colors hover:border-accent-pink hover:bg-accent-pink/5">
+                    <ImageIcon size={20} className="text-text-secondary" />
+                    <span className="text-[11px] font-medium text-text-secondary">Upload</span>
                     <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
                   </label>
                 )}
@@ -118,7 +118,7 @@ export default function ContentScorerPage() {
             </div>
 
             <button
-              className="btn-accent w-full justify-center h-12 text-[15px] shadow-[0_0_20px_var(--accent-cyan-dim)]"
+              className="btn-accent w-full justify-center h-12 text-[15px] shadow-[0_4px_20px_rgba(225,48,108,0.2)]"
               onClick={handleScore}
               disabled={(!caption.trim() && !thumbnail) || analysing}
             >
@@ -146,15 +146,15 @@ export default function ContentScorerPage() {
           {analysing && (
             <div className="surface-glass flex h-full flex-col items-center justify-center p-12 text-center min-h-[400px]">
               <div className="relative mb-6 flex h-20 w-20 items-center justify-center">
-                <div className="absolute inset-0 rounded-full border-2 border-[var(--accent-cyan-dim)]"></div>
-                <div className="absolute inset-0 animate-spin rounded-full border-t-2 border-[var(--accent-cyan)]"></div>
-                <Sparkles size={24} className="text-[var(--accent-cyan)] animate-pulse" />
+                <div className="absolute inset-0 rounded-full border-2 border-accent-pink/10"></div>
+                <div className="absolute inset-0 animate-spin rounded-full border-t-2 border-accent-pink"></div>
+                <Sparkles size={24} className="text-accent-pink animate-pulse" />
               </div>
               <div className="mb-3 font-['Outfit'] text-[18px] font-bold text-text-contrast">Analysing 140M Data Points</div>
               <div className="flex flex-col gap-2 text-[13px] text-[var(--text-secondary)]">
                 <span className="flex items-center justify-center gap-2"><CheckCircle2 size={12} className="text-[var(--green)]" /> Parsing syntax</span>
-                <span className="flex items-center justify-center gap-2"><CheckCircle2 size={12} className="text-[var(--green)]" /> Comparing vs niche baseline</span>
-                <span className="flex items-center justify-center gap-2 animate-pulse"><Target size={12} className="text-[var(--accent-cyan)]" /> Predicting distribution</span>
+                <span className="flex items-center justify-center gap-2"><CheckCircle2 size={12} className="text-green" /> Comparison complete</span>
+                <span className="flex items-center justify-center gap-2 animate-pulse"><Target size={12} className="text-accent-pink" /> Predicting distribution</span>
               </div>
             </div>
           )}
@@ -174,7 +174,7 @@ export default function ContentScorerPage() {
               <div className="surface-glass p-0 overflow-hidden">
                 <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-raised)] px-5 py-4">
                   <h3 className="font-['Outfit'] text-[15px] font-bold text-text-contrast flex items-center gap-2">
-                    <Sparkles size={16} className="text-[var(--accent-cyan)]" /> AI Suggestions
+                    <Sparkles size={16} className="text-accent-pink" /> AI Suggestions
                   </h3>
                 </div>
                 
@@ -220,10 +220,10 @@ export default function ContentScorerPage() {
               </div>
 
               {/* AI Replacement Suggestion */}
-              <div className="surface-glass p-6 border-[var(--border-accent)] shadow-[0_4px_30px_var(--accent-cyan-dim)]">
+              <div className="surface-glass p-6 border-accent-pink/30 shadow-[0_8px_32px_rgba(225,48,108,0.15)]">
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="font-['Outfit'] text-[15px] font-bold text-text-contrast flex items-center gap-2">
-                    <Sparkles size={16} className="text-[var(--accent-cyan)]" /> Generated Alternative
+                    <Sparkles size={16} className="text-accent-pink" /> Generated Alternative
                   </h3>
                   <button
                     onClick={() => {

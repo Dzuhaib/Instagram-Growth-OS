@@ -11,33 +11,39 @@
 
   --color-border-subtle: rgba(10, 15, 30, 0.08);
   --color-border-strong: rgba(10, 15, 30, 0.15);
-  --color-border-accent: rgba(24, 95, 165, 0.3);
+  --color-border-accent: rgba(225, 48, 108, 0.3);
 
   --color-text-contrast: #0A0F1E;
   --color-text-primary: #1E293B;
   --color-text-secondary: #475569;
   --color-text-tertiary: #64748B;
 
-  --color-accent-cyan: #185FA5;
-  --color-accent-cyan-dim: rgba(24, 95, 165, 0.1);
-  --color-accent-cyan-glow: rgba(24, 95, 165, 0.3);
+  --color-accent-instagram: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  --image-gradient-instagram: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
 
-  --color-accent-violet: #534AB7;
-  --color-accent-violet-dim: rgba(83, 74, 183, 0.1);
+  --color-accent-pink: #E1306C;
+  --color-accent-pink-dim: rgba(225, 48, 108, 0.1);
+  --color-accent-pink-glow: rgba(225, 48, 108, 0.3);
 
-  --color-green: #059669;
-  --color-green-dim: rgba(5, 150, 105, 0.1);
+  --color-accent-purple: #C13584;
+  --color-accent-purple-dim: rgba(193, 53, 132, 0.1);
+  
+  --color-accent-orange: #F56040;
+  --color-accent-yellow: #FCAF45;
 
-  --color-amber: #D97706;
-  --color-amber-dim: rgba(217, 119, 6, 0.1);
+  --color-green: #0095f6; /* Instagram Blue for actions */
+  --color-green-dim: rgba(0, 149, 246, 0.1);
 
-  --color-red: #DC2626;
-  --color-red-dim: rgba(220, 38, 38, 0.1);
+  --color-amber: #F77737;
+  --color-amber-dim: rgba(247, 119, 55, 0.1);
+
+  --color-red: #ED4956;
+  --color-red-dim: rgba(237, 73, 86, 0.1);
 
   --font-heading: "Outfit", sans-serif;
   --font-sans: "Inter", sans-serif;
 
-  /* Re-maps backward compatibility for var(--color) used dynamically */
+  /* Backward Compatibility Variables */
   --bg-base: #F8FAFC;
   --bg-surface: #FFFFFF;
   --bg-raised: #F1F5F9;
@@ -46,28 +52,28 @@
 
   --border-subtle: rgba(10, 15, 30, 0.08);
   --border-strong: rgba(10, 15, 30, 0.15);
-  --border-accent: rgba(24, 95, 165, 0.3);
+  --border-accent: rgba(225, 48, 108, 0.3);
 
   --text-contrast: #0A0F1E;
   --text-primary: #1E293B;
   --text-secondary: #475569;
   --text-tertiary: #64748B;
 
-  --accent-cyan: #185FA5;
-  --accent-cyan-dim: rgba(24, 95, 165, 0.1);
-  --accent-cyan-glow: rgba(24, 95, 165, 0.3);
-
-  --accent-violet: #534AB7;
-  --green: #059669;
-  --green-dim: rgba(5, 150, 105, 0.1);
-  --amber: #D97706;
-  --amber-dim: rgba(217, 119, 6, 0.1);
-  --red: #DC2626;
-  --red-dim: rgba(220, 38, 38, 0.1);
+  --accent-instagram: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  --accent-pink: #E1306C;
+  --accent-pink-dim: rgba(225, 48, 108, 0.1);
+  --accent-pink-glow: rgba(225, 48, 108, 0.3);
+  --accent-purple: #C13584;
+  
+  --green: #0095f6;
+  --green-dim: rgba(0, 149, 246, 0.1);
+  --amber: #F77737;
+  --amber-dim: rgba(247, 119, 55, 0.1);
+  --red: #ED4956;
+  --red-dim: rgba(237, 73, 86, 0.1);
 }
 
 :root {
-  /* Retain for older custom classes if needed */
   --bg-base: #F8FAFC;
   --bg-surface: #FFFFFF;
   --bg-raised: #F1F5F9;
@@ -76,28 +82,26 @@
 
   --border-subtle: rgba(10, 15, 30, 0.08);
   --border-strong: rgba(10, 15, 30, 0.15);
-  --border-accent: rgba(24, 95, 165, 0.3);
+  --border-accent: rgba(225, 48, 108, 0.3);
 
   --text-contrast: #0A0F1E;
   --text-primary: #1E293B;
   --text-secondary: #475569;
   --text-tertiary: #64748B;
 
-  --accent-cyan: #185FA5;
-  --accent-cyan-dim: rgba(24, 95, 165, 0.1);
-  --accent-cyan-glow: rgba(24, 95, 165, 0.3);
+  --accent-instagram: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  --accent-pink: #E1306C;
+  --accent-pink-dim: rgba(225, 48, 108, 0.1);
+  --accent-pink-glow: rgba(225, 48, 108, 0.3);
+  --accent-purple: #C13584;
+  --accent-purple-dim: rgba(193, 53, 132, 0.1);
 
-  --accent-violet: #534AB7;
-  --accent-violet-dim: rgba(83, 74, 183, 0.1);
-
-  --green: #059669;
-  --green-dim: rgba(5, 150, 105, 0.1);
-
-  --amber: #D97706;
-  --amber-dim: rgba(217, 119, 6, 0.1);
-
-  --red: #DC2626;
-  --red-dim: rgba(220, 38, 38, 0.1);
+  --green: #0095f6;
+  --green-dim: rgba(0, 149, 246, 0.1);
+  --amber: #F77737;
+  --amber-dim: rgba(247, 119, 55, 0.1);
+  --red: #ED4956;
+  --red-dim: rgba(237, 73, 86, 0.1);
 }
 
 body {
@@ -118,7 +122,6 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
-/* Premium Surface Components */
 .surface-glass {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
@@ -148,18 +151,28 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-/* Base Interactions extracted for purity */
 @layer components {
+  .text-gradient-instagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+  }
+
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 bg-gradient-to-b from-text-contrast to-[#1E293B] text-bg-base font-semibold text-sm px-5 py-2.5 rounded-full border border-text-contrast/20 shadow-[0_2px_8px_rgba(10,15,30,0.15)] transition-all hover:bg-[#1E293B] hover:-translate-y-[1px] hover:shadow-[0_4px_12px_rgba(10,15,30,0.25)];
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+    @apply inline-flex items-center justify-center gap-2 text-white font-semibold text-sm px-6 py-2.5 rounded-full border-none shadow-[0_4px_14px_rgba(225,48,108,0.2)] transition-all hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(225,48,108,0.3)] active:scale-95;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 bg-bg-overlay text-text-primary font-medium text-sm px-5 py-2.5 rounded-full border border-border-subtle transition-all backdrop-blur-md hover:bg-bg-overlay-hover hover:border-border-strong hover:text-text-contrast;
+    @apply inline-flex items-center justify-center gap-2 bg-bg-surface text-text-primary font-medium text-sm px-6 py-2.5 rounded-full border border-border-subtle transition-all backdrop-blur-md hover:bg-bg-raised hover:border-border-strong hover:text-text-contrast;
   }
 
   .btn-accent {
-    @apply inline-flex items-center justify-center gap-2 bg-gradient-to-br from-accent-cyan to-[#0077FF] text-white font-semibold text-sm px-5 py-2.5 rounded-full border-none shadow-[0_4px_14px_var(--color-accent-cyan-glow),inset_0_1px_0_rgba(255,255,255,0.4)] transition-all hover:-translate-y-[1px] hover:shadow-[0_6px_20px_var(--color-accent-cyan-glow),inset_0_1px_0_rgba(255,255,255,0.5)];
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+    @apply inline-flex items-center justify-center gap-2 text-white font-semibold text-sm px-6 py-2.5 rounded-full border-none shadow-[0_4px_14px_rgba(193,53,132,0.2)] transition-all hover:scale-[1.02] hover:shadow-[0_6px_20px_rgba(193,53,132,0.3)] active:scale-95;
   }
 
   .input-field {
@@ -167,7 +180,6 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Patterns */
 .bg-grid-pattern {
   background-image: 
     linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
@@ -177,9 +189,6 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
 }
 
-/* Animations that tailwindcss-animate leverages for keyframes if missing, but we rely on plugin */
-
-/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

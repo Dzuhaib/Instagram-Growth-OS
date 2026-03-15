@@ -63,11 +63,11 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           href="/"
           className={`group flex min-h-[72px] items-center border-b border-border-subtle cursor-pointer ${collapsed ? "justify-center px-4" : "px-6 gap-3"}`}
         >
-          <div className="w-6 h-6 rounded-full bg-text-contrast flex shrink-0 items-center justify-center transition-transform duration-500 group-hover:rotate-180">
+          <div className="w-6 h-6 rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] flex shrink-0 items-center justify-center transition-transform duration-500 group-hover:rotate-180 shadow-sm">
             <div className="w-2.5 h-2.5 rounded-full bg-bg-base"></div>
           </div>
           {!collapsed && (
-            <div className="font-heading text-[16px] font-medium tracking-tight text-text-contrast pt-0.5">
+            <div className="font-heading text-[16px] font-bold tracking-tight text-gradient-instagram pt-0.5">
               GrowthOS
             </div>
           )}
@@ -91,11 +91,11 @@ export default function DashboardShell({ children }: { children: React.ReactNode
                     title={collapsed ? item.label : undefined}
                     className={`group flex items-center rounded-xl px-3 py-2.5 transition-all duration-300 ${
                       isActive 
-                        ? "bg-text-contrast/10 text-text-contrast" 
-                        : "text-text-secondary hover:bg-text-contrast/5 hover:text-text-contrast"
+                        ? "bg-accent-pink/10 text-accent-pink" 
+                        : "text-text-secondary hover:bg-accent-pink/5 hover:text-accent-pink"
                     } ${collapsed ? "justify-center" : "gap-3"}`}
                   >
-                    <item.icon size={18} strokeWidth={isActive ? 2 : 1.5} className={isActive ? "text-text-contrast" : "text-text-secondary group-hover:text-text-contrast transition-colors"} />
+                    <item.icon size={18} strokeWidth={isActive ? 2 : 1.5} className={isActive ? "text-accent-pink" : "text-text-secondary group-hover:text-accent-pink transition-colors"} />
                     {!collapsed && <span className="text-[14px] font-medium">{item.label}</span>}
                   </Link>
                 );
@@ -119,11 +119,11 @@ export default function DashboardShell({ children }: { children: React.ReactNode
                     title={collapsed ? item.label : undefined}
                     className={`group flex items-center rounded-xl px-3 py-2.5 transition-all duration-300 ${
                       isActive 
-                        ? "bg-text-contrast/10 text-text-contrast" 
-                        : "text-text-secondary hover:bg-text-contrast/5 hover:text-text-contrast"
+                        ? "bg-accent-pink/10 text-accent-pink" 
+                        : "text-text-secondary hover:bg-accent-pink/5 hover:text-accent-pink"
                     } ${collapsed ? "justify-center" : "gap-3"}`}
                   >
-                    <item.icon size={18} strokeWidth={isActive ? 2 : 1.5} className={isActive ? "text-[#0077FF] md:text-text-contrast" : "text-text-secondary group-hover:text-[#0077FF] md:group-hover:text-text-contrast transition-colors"} />
+                    <item.icon size={18} strokeWidth={isActive ? 2 : 1.5} className={isActive ? "text-accent-pink" : "text-text-secondary group-hover:text-accent-pink transition-colors"} />
                     {!collapsed && <span className="text-[14px] font-medium">{item.label}</span>}
                   </Link>
                 );
@@ -139,11 +139,11 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             title={collapsed ? "Settings" : undefined}
             className={`group flex items-center rounded-xl px-3 py-2.5 transition-all duration-300 ${
               pathname === "/dashboard/settings" 
-                ? "bg-text-contrast/10 text-text-contrast" 
-                : "text-text-secondary hover:bg-text-contrast/5 hover:text-text-contrast"
+                ? "bg-accent-pink/10 text-accent-pink" 
+                : "text-text-secondary hover:bg-accent-pink/5 hover:text-accent-pink"
             } ${collapsed ? "justify-center" : "gap-3 mb-1.5"}`}
           >
-            <Settings size={18} strokeWidth={pathname === "/dashboard/settings" ? 2 : 1.5} className={pathname === "/dashboard/settings" ? "text-text-contrast" : "text-text-secondary group-hover:text-text-contrast transition-colors"} />
+            <Settings size={18} strokeWidth={pathname === "/dashboard/settings" ? 2 : 1.5} className={pathname === "/dashboard/settings" ? "text-accent-pink" : "text-text-secondary group-hover:text-accent-pink transition-colors"} />
             {!collapsed && <span className="text-[14px] font-medium">Settings</span>}
           </Link>
           <button
@@ -162,6 +162,13 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         >
           {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
         </button>
+        {/* The following code was part of the instruction but seems misplaced as it replaces the collapse toggle button.
+            <Link href="/onboarding" className="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] px-10 text-base font-bold text-white shadow-[0_8px_32px_-8px_rgba(225,48,108,0.5)] transition-all hover:scale-[1.03] hover:shadow-[0_12px_48px_-8px_rgba(225,48,108,0.7)] active:scale-[0.98]">
+              <span className="relative z-10 flex items-center gap-2">
+                Launch your engine <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+              </span>
+            </Link>
+        */}
       </aside>
 
       {/* Main Content Area */}
@@ -182,18 +189,18 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
           {/* Right Actions */}
           <div className="flex items-center gap-4">
-            <div className="hidden rounded-full border border-border-accent bg-accent-cyan-dim px-3 py-1 text-[11px] uppercase tracking-widest font-bold text-accent-cyan sm:block">
+            <div className="hidden rounded-full border border-accent-pink/30 bg-accent-pink/10 px-3 py-1 text-[11px] uppercase tracking-widest font-bold text-accent-pink sm:block">
               Pro Trial (5 days left)
             </div>
 
             <button className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border-subtle bg-bg-surface text-text-secondary transition-all hover:bg-bg-overlay hover:border-border-strong hover:text-text-contrast shadow-sm">
               <Bell size={18} strokeWidth={2} />
               {notifications > 0 && (
-                 <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-accent-cyan shadow-[0_0_10px_var(--color-accent-cyan)] border-2 border-bg-surface"></span>
+                 <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-accent-pink shadow-[0_0_10px_var(--color-accent-pink)] border-2 border-bg-surface"></span>
               )}
             </button>
 
-            <button className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-accent-cyan to-[#0077FF] font-heading text-[15px] font-bold text-bg-base border border-text-contrast/20 hover:scale-105 transition-transform shadow-[0_4px_10px_var(--color-accent-cyan-dim)]">
+            <button className="flex h-10 w-10 items-center justify-center rounded-xl bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] font-heading text-[15px] font-bold text-white border border-white/20 hover:scale-105 transition-transform shadow-[0_4px_10px_rgba(225,48,108,0.3)]">
               J
             </button>
           </div>

@@ -39,7 +39,7 @@ const RECOMMENDATIONS = [
     title: "Switch to outcome-led hooks",
     desc: "Your last 3 Reels started with 'Here is how to...'. Our data shows hooks starting with 'I tried X for 30 days...' perform 4x better in your niche.",
     action: "View Hook Templates",
-    color: "var(--accent-cyan)",
+    color: "var(--accent-pink)",
   },
   {
     id: 2,
@@ -66,7 +66,7 @@ const RECOMMENDATIONS = [
     title: "Untapped Topic: Meal Prep",
     desc: "Competitors in your niche are seeing 2.3x higher reach on 'Meal Prep for Beginners' content. You have 0 posts on this topic.",
     action: "Explore Gap Analysis",
-    color: "var(--accent-violet)",
+    color: "var(--accent-purple)",
   },
 ];
 
@@ -75,7 +75,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return (
       <div className="surface-glass rounded-lg border border-[var(--border-strong)] p-3 text-[13px] shadow-xl">
         <div className="mb-1 text-[var(--text-tertiary)]">{label}</div>
-        <div className="font-bold text-[var(--accent-cyan)]">
+        <div className="font-bold text-accent-pink">
           {(payload[0].value / 1000).toFixed(1)}K Reach
         </div>
       </div>
@@ -108,9 +108,9 @@ export default function DashboardPage() {
       {/* Metrics Row */}
       <div className="mb-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: "Est. Reach This Week", value: 184000, prefix: "", suffix: "", icon: TrendingUp, color: "var(--accent-cyan)" },
+          { label: "Est. Reach This Week", value: 184000, prefix: "", suffix: "", icon: TrendingUp, color: "var(--accent-pink)" },
           { label: "Engagement Rate", value: 7.2, prefix: "", suffix: "%", icon: Heart, color: "var(--green)" },
-          { label: "DM Share Score", value: 94, prefix: "", suffix: "/100", icon: Share2, color: "var(--accent-violet)" },
+          { label: "DM Share Score", value: 94, prefix: "", suffix: "/100", icon: Share2, color: "var(--accent-purple)" },
           { label: "Niche Consistency", value: 88, prefix: "", suffix: "%", icon: Target, color: "var(--amber)" },
         ].map((metric) => (
           <div key={metric.label} className="surface-glass p-6 transition-all hover:border-[var(--border-strong)]">
@@ -150,19 +150,19 @@ export default function DashboardPage() {
                 <AreaChart data={REACH_DATA} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="reachGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--accent-cyan)" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="var(--accent-cyan)" stopOpacity={0} />
+                      <stop offset="5%" stopColor="var(--accent-pink)" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="var(--accent-pink)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--border-strong)', strokeWidth: 1, strokeDasharray: '4 4' }} />
                   <Area
                     type="monotone"
                     dataKey="reach"
-                    stroke="var(--accent-cyan)"
+                    stroke="var(--accent-pink)"
                     strokeWidth={3}
                     fillOpacity={1}
                     fill="url(#reachGradient)"
-                    activeDot={{ r: 6, fill: "var(--accent-cyan)", stroke: "var(--bg-base)", strokeWidth: 3 }}
+                    activeDot={{ r: 6, fill: "var(--accent-pink)", stroke: "var(--bg-base)", strokeWidth: 3 }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -173,7 +173,7 @@ export default function DashboardPage() {
           <div className="surface-glass p-6 md:p-8">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="font-['Outfit'] text-lg font-bold text-text-contrast">Optimal Schedule</h2>
-              <button className="text-[13px] font-medium text-[var(--accent-cyan)] hover:underline">
+              <button className="text-[13px] font-medium text-accent-pink hover:underline">
                 View Full Calendar
               </button>
             </div>
@@ -213,9 +213,9 @@ export default function DashboardPage() {
         <div className="surface-glass flex flex-col p-6 md:p-8">
           <div className="mb-6 flex items-center justify-between">
             <h2 className="font-['Outfit'] text-lg font-bold text-text-contrast flex items-center gap-2">
-              <Sparkles size={16} className="text-[var(--accent-cyan)]" /> AI Feed
+              <Sparkles size={16} className="text-accent-pink" /> AI Feed
             </h2>
-            <div className="flex items-center justify-center h-6 w-6 rounded-full bg-[var(--accent-cyan-dim)] text-xs font-bold text-[var(--accent-cyan)] border border-[var(--border-accent)]">
+            <div className="flex items-center justify-center h-6 w-6 rounded-full bg-accent-pink/10 text-xs font-bold text-accent-pink border border-accent-pink/30">
               4
             </div>
           </div>

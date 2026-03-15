@@ -71,7 +71,7 @@ export default function HookAnalyserPage() {
       <div className="mb-10 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
         <div>
           <h1 className="font-['Outfit'] text-3xl font-bold tracking-tight text-text-contrast mb-2 flex items-center gap-2">
-            <LinkIcon className="text-[var(--accent-cyan)]" size={28} /> Hook Analyser
+            <LinkIcon className="text-accent-pink" size={28} /> Hook Analyser
           </h1>
           <p className="text-[15px] text-[var(--text-secondary)]">
             Test the first 3 seconds of your video or first line of your caption.
@@ -84,28 +84,28 @@ export default function HookAnalyserPage() {
         <div className="flex flex-col gap-6">
           <div className="surface-glass p-6 md:p-8">
             <h2 className="mb-6 font-['Outfit'] text-[18px] font-bold text-text-contrast flex items-center gap-2">
-              <Sparkles size={18} className="text-[var(--accent-cyan)]" /> Test your hook
+              <Sparkles size={18} className="text-accent-pink" /> Test your hook
             </h2>
 
             <div className="mb-6">
               <label className="mb-3 block text-[13px] font-semibold text-[var(--text-secondary)]">Hook Text</label>
               <textarea
-                className="input-field min-h-[120px] bg-[var(--bg-raised)] font-['Inter'] leading-relaxed shadow-inner font-medium text-[15px] focus:bg-[var(--bg-surface)] focus:ring-1 focus:ring-[var(--accent-cyan)] focus:border-[var(--accent-cyan)]"
+                className="input-field min-h-[120px] bg-bg-raised font-sans leading-relaxed shadow-inner font-medium text-[15px] focus:bg-bg-surface focus:ring-1 focus:ring-accent-pink focus:border-accent-pink"
                 placeholder="E.g. Want to know how to grow on Instagram?"
                 value={hook}
                 onChange={(e) => setHook(e.target.value)}
               />
             </div>
 
-            <div className="mb-8 rounded-lg border border border-[rgba(0,229,255,0.15)] bg-gradient-to-r from-[var(--bg-raised)] to-[var(--bg-surface)] p-5 text-[13px] text-[var(--text-secondary)] leading-relaxed shadow-inner">
+            <div className="mb-8 rounded-lg border border-accent-pink/20 bg-gradient-to-r from-bg-raised to-bg-surface p-5 text-[13px] text-text-secondary leading-relaxed shadow-inner">
               <div className="mb-2 flex items-center gap-2 font-semibold text-text-contrast">
-                <Target size={16} className="text-[var(--accent-cyan)]" /> The 3-Second Rule
+                <Target size={16} className="text-accent-pink" /> The 3-Second Rule
               </div>
               The AI evaluates "Retention Probability". If your hook doesn't secure the viewer's attention in the first 3 seconds, they will swipe, telling the algorithm your content is low quality.
             </div>
 
             <button
-              className="btn-accent w-full justify-center h-12 text-[15px] shadow-[0_0_20px_var(--accent-cyan-dim)]"
+              className="btn-accent w-full justify-center h-12 text-[15px] shadow-[0_4px_20px_rgba(225,48,108,0.2)]"
               onClick={runAnalysis}
               disabled={!hook.trim() || analysing}
             >
@@ -135,14 +135,14 @@ export default function HookAnalyserPage() {
           {analysing && (
             <div className="surface-glass flex h-full min-h-[400px] flex-col items-center justify-center p-12 text-center">
               <div className="relative mb-6 flex h-24 w-24 items-center justify-center">
-                <div className="absolute inset-0 rounded-full border border-[var(--bg-raised)]"></div>
-                <div className="absolute inset-0 rounded-full border-b-[3px] border-l-[3px] border-[var(--accent-cyan)] animate-spin" style={{ animationDuration: "1s" }}></div>
-                <Sparkles size={28} className="text-[var(--accent-cyan)] animate-pulse" />
+                <div className="absolute inset-0 rounded-full border border-bg-raised"></div>
+                <div className="absolute inset-0 rounded-full border-b-[3px] border-l-[3px] border-accent-pink animate-spin" style={{ animationDuration: "1s" }}></div>
+                <Sparkles size={28} className="text-accent-pink animate-pulse" />
               </div>
               <div className="mb-2 font-['Outfit'] text-[20px] font-bold text-text-contrast">Scoring Hook...</div>
               <div className="text-[14px] text-[var(--text-secondary)] flex flex-col items-center justify-center gap-2 w-full mt-4">
-                 <div className="w-[60%] h-1 bg-[var(--bg-raised)] rounded-full overflow-hidden">
-                    <div className="h-full bg-[var(--accent-cyan)] w-1/2 rounded-full animate-pulse transition-all"></div>
+                 <div className="w-[60%] h-1 bg-bg-raised rounded-full overflow-hidden">
+                    <div className="h-full bg-accent-pink w-1/2 rounded-full animate-pulse transition-all"></div>
                  </div>
                  <span className="text-[11px] font-bold uppercase tracking-widest mt-1 opacity-50">Checking Curiosity Matrix</span>
               </div>
@@ -193,13 +193,13 @@ export default function HookAnalyserPage() {
               {/* Replacements */}
               <div>
                 <h3 className="mb-4 font-['Outfit'] text-[16px] font-bold text-text-contrast flex items-center gap-2 px-1">
-                  <Sparkles size={16} className="text-[var(--accent-cyan)]" /> High-Retention Alternatives
+                  <Sparkles size={16} className="text-accent-pink" /> High-Retention Alternatives
                 </h3>
                 <div className="flex flex-col gap-4">
                   {results.variants.map((variant: any) => (
                     <div key={variant.id} className="surface-glass p-5 border border-[var(--border-subtle)] transition-all hover:border-[var(--border-strong)] relative group shadow-sm hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
                       <div className="mb-3 flex items-center justify-between">
-                        <span className="rounded bg-[var(--accent-cyan-dim)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--accent-cyan)] border border-[rgba(0,229,255,0.2)]">
+                        <span className="rounded bg-accent-pink/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-pink border border-accent-pink/20">
                           {variant.type}
                         </span>
                         <button

@@ -113,7 +113,7 @@ const POSTS = [
   },
 ];
 
-const PIE_COLORS = ["var(--accent-cyan)", "var(--accent-violet)", "var(--text-tertiary)"];
+const PIE_COLORS = ["var(--accent-pink)", "var(--accent-purple)", "var(--text-tertiary)"];
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -168,7 +168,7 @@ export default function AnalyticsPage() {
       <div className="mb-8 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
         <div>
           <h1 className="font-['Outfit'] text-3xl font-bold tracking-tight text-text-contrast mb-2 flex items-center gap-2">
-            <BarChart3 className="text-[var(--accent-cyan)]" size={28} /> Performance Analytics
+            <BarChart3 className="text-accent-pink" size={28} /> Performance Analytics
           </h1>
           <p className="text-[15px] text-[var(--text-secondary)]">
             Deep dive into your account growth, reach formats, and AI attribution.
@@ -200,9 +200,9 @@ export default function AnalyticsPage() {
       {/* Summary Cards */}
       <div className="mb-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: "Total Reach", value: "248.5K", trend: "+34.2%", isUp: true, icon: Eye, color: "var(--accent-cyan)" },
+          { label: "Total Reach", value: "248.5K", trend: "+34.2%", isUp: true, icon: Eye, color: "var(--accent-pink)" },
           { label: "Avg Engagement", value: "6.4%", trend: "+1.2%", isUp: true, icon: TrendingUp, color: "var(--green)" },
-          { label: "Net Followers", value: "+1,420", trend: "+450", isUp: true, icon: Users, color: "var(--accent-violet)" },
+          { label: "Net Followers", value: "+1,420", trend: "+450", isUp: true, icon: Users, color: "var(--accent-purple)" },
           { label: "AI Match Rate", value: "75%", trend: "-2.4%", isUp: false, icon: Sparkles, color: "var(--amber)" },
         ].map((stat) => (
           <div key={stat.label} className="surface-glass p-6">
@@ -232,12 +232,12 @@ export default function AnalyticsPage() {
               <AreaChart data={REACH_DATA} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorNonFollower" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--accent-cyan)" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="var(--accent-cyan)" stopOpacity={0} />
+                    <stop offset="5%" stopColor="var(--accent-pink)" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="var(--accent-pink)" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorFollower" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--accent-violet)" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="var(--accent-violet)" stopOpacity={0} />
+                    <stop offset="5%" stopColor="var(--accent-purple)" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="var(--accent-purple)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-strong)" opacity={0.5} />
@@ -245,8 +245,8 @@ export default function AnalyticsPage() {
                 <YAxis stroke="var(--text-tertiary)" fontSize={11} tickFormatter={(val) => `${val / 1000}k`} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--border-strong)', strokeWidth: 1, strokeDasharray: '4 4' }} />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', color: 'var(--text-secondary)' }} />
-                <Area type="monotone" dataKey="nonFollowers" name="Non-Followers" stroke="var(--accent-cyan)" strokeWidth={2} fillOpacity={1} fill="url(#colorNonFollower)" />
-                <Area type="monotone" dataKey="followers" name="Followers" stroke="var(--accent-violet)" strokeWidth={2} fillOpacity={1} fill="url(#colorFollower)" />
+                <Area type="monotone" dataKey="nonFollowers" name="Non-Followers" stroke="var(--accent-pink)" strokeWidth={2} fillOpacity={1} fill="url(#colorNonFollower)" />
+                <Area type="monotone" dataKey="followers" name="Followers" stroke="var(--accent-purple)" strokeWidth={2} fillOpacity={1} fill="url(#colorFollower)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -325,7 +325,7 @@ export default function AnalyticsPage() {
                 <YAxis stroke="var(--text-tertiary)" fontSize={11} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--bg-overlay)' }} />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', color: 'var(--text-secondary)' }} />
-                <Bar dataKey="gained" name="Gained" fill="var(--accent-cyan)" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                <Bar dataKey="gained" name="Gained" fill="var(--accent-pink)" radius={[4, 4, 0, 0]} maxBarSize={40} />
                 <Bar dataKey="lost" name="Lost" fill="var(--red)" radius={[4, 4, 0, 0]} maxBarSize={40} />
               </BarChart>
             </ResponsiveContainer>
@@ -337,7 +337,7 @@ export default function AnalyticsPage() {
       <div className="surface-glass overflow-hidden">
         <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-raised)] px-6 py-5 flex items-center justify-between">
           <h2 className="font-['Outfit'] text-[18px] font-bold text-text-contrast">Recent Content Performance</h2>
-          <button className="flex items-center gap-1.5 text-[13px] font-medium text-[var(--accent-cyan)] hover:text-text-contrast transition-colors">
+          <button className="flex items-center gap-1.5 text-[13px] font-medium text-accent-pink hover:text-text-contrast transition-colors">
             <Filter size={14} /> Filter
           </button>
         </div>
