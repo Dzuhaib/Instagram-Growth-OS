@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "GrowthOS — AI-Powered Instagram Growth Intelligence",
+  title: "Instagram Growth OS — Engine your viral reach",
   description:
     "Engineering viral Instagram growth through data science. AI content scoring, niche tracking, and hook analysis for creators and agencies. Official Meta API, 100% Secure.",
   keywords: ["Instagram growth tool", "AI content strategy", "Instagram analytics", "viral hooks", "Meta Graph API", "organic reach intelligence"],

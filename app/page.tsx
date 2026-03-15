@@ -81,8 +81,8 @@ export default function LandingPage() {
           >
             <motion.div variants={itemVariants} className="mb-8 flex items-center gap-2.5 rounded-full border border-text-contrast/10 bg-text-contrast/5 px-4 py-1.5 backdrop-blur-md">
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-50"></span>
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-pink opacity-50"></span>
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)]"></span>
               </span>
               <span className="text-[11px] font-medium uppercase tracking-widest text-text-contrast/80">Available now</span>
             </motion.div>
