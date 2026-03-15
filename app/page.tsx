@@ -456,6 +456,43 @@ export default function LandingPage() {
 
       </main>
 
+      {/* FAQ SECTION */}
+      <section className="mx-auto max-w-4xl px-6 py-24 relative z-10 border-t border-text-contrast/5">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-text-contrast tracking-tight mb-4">Frequently Asked Questions</h2>
+          <p className="text-text-secondary">Everything you need to know about engineering your reach.</p>
+        </div>
+        <div className="space-y-4">
+          {[
+            { 
+              q: "Is this safe for my Instagram account?", 
+              a: "Absolutely. GrowthOS uses the official Meta Graph API. We never ask for your password and we do not perform automated actions like liking or following. It is 100% read-only and compliant with Instagram's terms of service." 
+            },
+            { 
+              q: "How does the AI Content Scorer work?", 
+              a: "We analyze over 48 attributes of your historical performance, audience sentiment, and viral trends in your niche. The AI then suggests specific hooks and content structures that have the highest probability of triggering the exploration algorithm." 
+            },
+            { 
+              q: "Can I manage multiple accounts?", 
+              a: "Yes. Our Pro and Agency plans allow you to link up to 3 and 5 accounts respectively, with a unified dashboard to track cross-account performance and niche trends." 
+            },
+            { 
+              q: "Is there a free trial?", 
+              a: "Yes, you can try GrowthOS with 5 sample content scores and basic niche tracking for 7 days. No credit card required." 
+            },
+            { 
+              q: "How often are the niche trends updated?", 
+              a: "Niche data is refreshed in real-time. As soon as a content trend begins to 'hockey stick' in your category, our system flags it with an 'Opportunity Score'." 
+            }
+          ].map((item, i) => (
+            <div key={i} className="p-6 rounded-2xl bg-bg-surface border border-text-contrast/5 hover:border-text-contrast/10 transition-colors">
+              <h3 className="text-lg font-bold text-text-contrast mb-3">{item.q}</h3>
+              <p className="text-text-secondary leading-relaxed text-sm md:text-base">{item.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* MINIMAL FOOTER */}
       <footer id="company" className="mt-24 md:mt-32 border-t border-text-contrast/5 bg-bg-raised relative z-10">
         <div className="mx-auto max-w-5xl px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-8">
