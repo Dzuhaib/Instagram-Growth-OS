@@ -209,6 +209,12 @@ export default function LandingPage() {
                             preserveAspectRatio="none"
                             className="w-full h-full"
                           >
+                            <defs>
+                              <linearGradient id="line-grad" x1="0" y1="1" x2="0" y2="0">
+                                <stop offset="0%" stopColor="var(--color-accent-cyan)" stopOpacity="0" />
+                                <stop offset="100%" stopColor="var(--color-accent-cyan)" stopOpacity="0.1" />
+                              </linearGradient>
+                            </defs>
                             <motion.path 
                               initial={{ pathLength: 0, opacity: 0 }}
                               whileInView={{ pathLength: 1, opacity: 1 }}
@@ -221,10 +227,10 @@ export default function LandingPage() {
                             />
                             <motion.path 
                               initial={{ opacity: 0 }}
-                              whileInView={{ opacity: 0.1 }}
+                              whileInView={{ opacity: 1 }}
                               transition={{ duration: 1, delay: 1 }}
                               d="M0,350 Q100,320 200,300 T400,200 T600,150 T800,100 T1000,50 L1000,400 L0,400 Z" 
-                              fill="var(--color-accent-cyan)" 
+                              fill="url(#line-grad)" 
                             />
                           </motion.svg>
                         </div>
