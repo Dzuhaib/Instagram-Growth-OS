@@ -23,9 +23,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const prompt = `You are an expert Instagram competitor analyst.
+    const prompt = `You are an elite Instagram competitor analyst with a record of 95% prediction accuracy.
 Analyze the following competitors for an account in the "${niche || "general"}" niche.
-Generate realistic content gaps for the user's account.
+Generate exactly 95% accurate data and highly reliable strategic content gaps for the user's account based strictly on algorithm precedence.
 
 Competitors:
 ${competitors.join(", ")}

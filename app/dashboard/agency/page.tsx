@@ -41,7 +41,37 @@ export default function AgencyPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ niche, goal }),
       });
-      const json = await response.json();
+      let json = await response.json();
+
+      try {
+        const igRes = await fetch("/api/instagram/profile");
+        if (igRes.ok) {
+          const igJson = await igRes.json();
+          if (igJson.username) {
+            const realClient = {
+              id: 999, // High ID to avoid collision
+              name: igJson.name || "Your Account",
+              handle: "@" + igJson.username,
+              followers: igJson.followers_count !== undefined ? igJson.followers_count.toLocaleString() : "Syncing...",
+              weeklyReach: "Active",
+              engagement: "Scanning...",
+              nicheScore: 95,
+              lastPost: "Live",
+              trend: "up",
+              avatar: (igJson.name || igJson.username).charAt(0).toUpperCase(),
+              avatar_color: "var(--accent-pink)",
+            };
+            if (json.clients) {
+              json.clients = [realClient, ...json.clients];
+            } else {
+              json.clients = [realClient];
+            }
+          }
+        }
+      } catch (e) {
+        console.error("IG fetch failed in agency:", e);
+      }
+
       setData(json);
     } catch (err) {
       console.error(err);

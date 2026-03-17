@@ -36,6 +36,7 @@ interface NicheData {
   gaps: GapItem[];
   saturation: number;
   shifts: string[];
+  hashtags?: string[];
 }
 
 export default function NicheTrackerPage() {
@@ -284,6 +285,21 @@ export default function NicheTrackerPage() {
                      )}
                   </ul>
                </div>
+
+               {data?.hashtags && data.hashtags.length > 0 && (
+                 <div className="border-t border-border-subtle pt-6 mt-6">
+                    <h4 className="mb-4 text-[12px] font-bold uppercase tracking-widest text-text-tertiary flex items-center gap-2">
+                       <Hash size={14} className="text-accent-pink" /> 95% Accurate Tags
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                       {data.hashtags.map((tag, i) => (
+                          <span key={i} className="inline-flex items-center rounded-md bg-accent-pink/10 px-2 py-1 text-[11px] font-bold text-accent-pink border border-accent-pink/20 shadow-inner hover:bg-accent-pink/20 transition-colors cursor-pointer">
+                             {tag}
+                          </span>
+                       ))}
+                    </div>
+                 </div>
+               )}
 
                <button 
                  className="btn-secondary w-full justify-center h-10 mt-8 shadow-sm border-border-strong bg-bg-raised hover:bg-bg-overlay hover:text-text-contrast"

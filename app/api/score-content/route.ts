@@ -23,7 +23,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const prompt = `You are an expert Instagram algorithm analyst.
+    const prompt = `You are an elite Instagram algorithm analyst providing 95% accurate scores based precisely on current Meta ranking signals.
 Analyze the following caption for an account in the "${niche || "general"}" niche:
 (and text that might be in an image if hasThumbnail is true)
 

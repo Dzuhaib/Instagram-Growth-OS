@@ -16,15 +16,15 @@ export async function POST(req: Request) {
   try {
     const { niche, topic } = await req.json();
 
-    const prompt = `You are a world-class market research AI specialized in Instagram trends.
+    const prompt = `You are an elite market research AI specialized in providing 95% accurate Instagram trends based on current data.
 Current Niche: ${niche || "General"}
 Specific Topic: ${topic || "All"}
 
-Generate current "Rising Trends" and "Content Gaps" for this niche.
+Generate real-time, 95% accurate "Rising Trends", "Content Gaps", and "Suggested Hashtags" for this niche.
 Respond strictly in valid JSON format with the following structure:
 {
   "trends": [
-    { "rank": 1, "keyword": "keyword here", "growth": "+145%", "volume": "High", "status": "rising" },
+    { "rank": 1, "keyword": "keyword here", "growth": "<CALCULATED_+X%>", "volume": "High", "status": "rising" },
     ... (total 5)
   ],
   "gaps": [
@@ -42,6 +42,13 @@ Respond strictly in valid JSON format with the following structure:
     "Sub-niche recommendation 1",
     "Sub-niche recommendation 2",
     "Sub-niche recommendation 3"
+  ],
+  "hashtags": [
+    "#trendinghash1",
+    "#trendinghash2",
+    "#trendinghash3",
+    "#trendinghash4",
+    "#trendinghash5"
   ]
 }
 

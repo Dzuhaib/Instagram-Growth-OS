@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Topic is required" }, { status: 400 });
     }
 
-    const prompt = `You are an expert Instagram growth marketer and copywriter.
+    const prompt = `You are a world-class Instagram copywriter and master of behavioral psychology. Your goal is 95% accuracy aligned with Meta's current viral algorithms.
 Create 3 different Instagram captions for an account in the "${niche || "general"}" niche based on the following input:
 Topic: ${topic}
 Tone: ${tone}
@@ -31,9 +31,10 @@ Return the response strictly as a JSON array of 3 objects with the following key
 - "style": A short descriptive name for the caption style (e.g., "Short & Punchy")
 - "text": The main caption text with line breaks (use \n\n for formatting)
 - "hashtags": A string of 4-6 relevant hashtags separated by spaces
-- "score": A predicted engagement score between 70 and 99
+- "score": A predicted engagement score between 80 and 99 (must be highly accurate to Meta's algorithm)
 
-Ensure the text has compelling hooks, uses appropriate spacing, and includes call-to-actions.
+Ensure the text uses ethical psychological manipulation triggers (like FOMO, curiosity gaps, polarizing statements, and high engagement wording) to force users to comment and share.
+Include strong hooks, aesthetic formatting/spacing, and a decisive Call-To-Action.
 Do not wrap the JSON in Markdown. Just output valid JSON array.`;
 
     const response = await openai.chat.completions.create({

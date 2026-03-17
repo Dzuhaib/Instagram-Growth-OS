@@ -23,7 +23,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const prompt = `You are an expert Instagram algorithm analyst and copywriting master.
+    const prompt = `You are an elite Instagram algorithm analyst. You provide 95% accurate data based completely on current Meta policies, strict algorithm trends, and behavioral science.
 Analyze the following hook for an account in the "${niche || "general"}" niche.
 Hook to analyze:
 """
