@@ -23,6 +23,7 @@ export default function OnboardingPage() {
   const [goal, setGoal] = useState("");
   const [niche, setNiche] = useState("");
   const [connecting, setConnecting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
    useEffect(() => {
@@ -60,7 +61,13 @@ export default function OnboardingPage() {
       // Clear URL params to prevent double-processing on refresh
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-    // ... rest of the persisted data logic stays same ...
+    // Load persisted data to prevent data loss on redirect
+    const savedName = localStorage.getItem("growth_os_name");
+    const savedNiche = localStorage.getItem("growth_os_niche");
+    const savedGoal = localStorage.getItem("growth_os_goal");
+    if (savedName) setName(savedName);
+    if (savedNiche) setNiche(savedNiche);
+    if (savedGoal) setGoal(savedGoal);
   }, []);
 
   const handleConnect = () => {
@@ -128,6 +135,15 @@ export default function OnboardingPage() {
 
         <div className="surface-glass p-8 md:p-12 relative overflow-hidden shadow-2xl">
           <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-accent-pink to-transparent opacity-50"></div>
+
+          {/* Error Banner */}
+          {error && (
+            <div className="mb-6 rounded-lg bg-red-500/10 border border-red-500/20 p-4 text-[13px] text-red-400 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+              <Shield size={16} />
+              <div className="flex-1">{error}</div>
+              <button onClick={() => setError(null)} className="opacity-50 hover:opacity-100 text-lg leading-none">✕</button>
+            </div>
+          )}
 
           {/* Step 1: Welcome & Goal */}
           {step === 1 && (
