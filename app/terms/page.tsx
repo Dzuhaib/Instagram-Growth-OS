@@ -31,7 +31,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-xl font-heading text-text-contrast mb-4">2. Use of Services</h2>
-            <p className="mb-4">Our services connect to official third-party APIs (including Meta's Graph API) to provide analytics. You agree to use these services only for lawful purposes and in accordance with these Terms.</p>
+            <p className="mb-4">Our services connect to official third-party APIs (including Meta&apos;s Graph API) to provide analytics. You agree to use these services only for lawful purposes and in accordance with these Terms.</p>
             <ul className="list-disc pl-5 space-y-2">
               <li>You must not use GrowthOS to violate any laws in your jurisdiction.</li>
               <li>You must not exploit the service to spam or scrape data beyond the allowed API quotas.</li>

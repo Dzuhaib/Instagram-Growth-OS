@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Users,
   TrendingUp,
@@ -19,72 +19,55 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-const CLIENTS = [
-  {
-    id: 1,
-    name: "FitLife by Sarah",
-    handle: "@fitlife_sarah",
-    followers: "48.2K",
-    weeklyReach: "142K",
-    engagement: "6.8%",
-    nicheScore: 94,
-    lastPost: "2h ago",
-    trend: "up",
-    avatar: "S",
-    avatar_color: "var(--accent-pink)",
-  },
-  {
-    id: 2,
-    name: "Chef Marco",
-    handle: "@chefmarco",
-    followers: "112K",
-    weeklyReach: "387K",
-    engagement: "8.2%",
-    nicheScore: 89,
-    lastPost: "4h ago",
-    trend: "up",
-    avatar: "M",
-    avatar_color: "var(--green)",
-  },
-  {
-    id: 3,
-    name: "Priya Travels",
-    handle: "@priyatravels",
-    followers: "28.7K",
-    weeklyReach: "61K",
-    engagement: "5.4%",
-    nicheScore: 71,
-    lastPost: "1d ago",
-    trend: "down",
-    avatar: "P",
-    avatar_color: "var(--amber)",
-  },
-  {
-    id: 4,
-    name: "TechTalks HQ",
-    handle: "@techtalks",
-    followers: "67.3K",
-    weeklyReach: "218K",
-    engagement: "7.1%",
-    nicheScore: 87,
-    lastPost: "6h ago",
-    trend: "up",
-    avatar: "T",
-    avatar_color: "var(--accent-purple)",
-  },
-];
+interface AgencyData {
+  summary: any[];
+  clients: any[];
+}
 
 export default function AgencyPage() {
+  const [data, setData] = useState<AgencyData | null>(null);
+  const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<number | null>(null);
   const [reportExported, setReportExported] = useState<number | null>(null);
+
+  const fetchAgencyData = async () => {
+    setLoading(true);
+    const niche = localStorage.getItem("growth_os_niche") || "Agency Management";
+    const goal = localStorage.getItem("growth_os_goal") || "Client Growth";
+    
+    try {
+      const response = await fetch("/api/agency", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ niche, goal }),
+      });
+      const json = await response.json();
+      setData(json);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAgencyData();
+  }, []);
 
   const handleExportReport = (id: number) => {
     setReportExported(id);
     setTimeout(() => setReportExported(null), 2000);
   };
 
-  const totalReach = CLIENTS.reduce((s, c) => s + parseFloat(c.weeklyReach), 0);
-  const avgEngagement = (CLIENTS.reduce((s, c) => s + parseFloat(c.engagement), 0) / CLIENTS.length).toFixed(1);
+  const getSummaryIcon = (iconName: string) => {
+    switch (iconName) {
+      case "Target": return Target;
+      case "TrendingUp": return TrendingUp;
+      case "BarChart3": return BarChart3;
+      case "AlertTriangle": return AlertTriangle;
+      default: return Target;
+    }
+  };
 
   return (
     <div className="pb-12 max-w-7xl mx-auto">
@@ -108,22 +91,23 @@ export default function AgencyPage() {
 
       {/* Agency Summary */}
       <div className="mb-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          { label: "Active Subscriptions", value: CLIENTS.length.toString(), color: "var(--accent-pink)", icon: Target },
-          { label: "Combined Network Reach", value: `${totalReach.toFixed(0)}K`, color: "var(--green)", icon: TrendingUp },
-          { label: "Average Engagement", value: `${avgEngagement}%`, color: "var(--amber)", icon: BarChart3 },
-          { label: "Critical Alerts", value: "3", color: "var(--red)", icon: AlertTriangle },
-        ].map((s) => (
-          <div key={s.label} className="surface-glass p-6 transition-all hover:border-border-strong">
-            <div className="mb-4 flex items-center justify-between">
-              <span className="text-[12px] font-semibold uppercase tracking-wider text-text-tertiary">{s.label}</span>
-              <s.icon size={16} style={{ color: s.color }} />
-            </div>
-            <div className="font-Heading text-[32px] font-bold tracking-tight leading-none text-text-contrast drop-shadow-sm">
-              {s.value}
-            </div>
-          </div>
+        {loading && [1, 2, 3, 4].map((i) => (
+          <div key={i} className="surface-glass p-6 h-[100px] animate-pulse bg-bg-raised" />
         ))}
+        {!loading && data?.summary?.map((s) => {
+          const Icon = getSummaryIcon(s.icon);
+          return (
+            <div key={s.label} className="surface-glass p-6 transition-all hover:border-border-strong">
+              <div className="mb-4 flex items-center justify-between">
+                <span className="text-[12px] font-semibold uppercase tracking-wider text-text-tertiary">{s.label}</span>
+                <Icon size={16} style={{ color: s.color }} />
+              </div>
+              <div className="font-Heading text-[32px] font-bold tracking-tight leading-none text-text-contrast drop-shadow-sm">
+                {s.value}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Client Cards Grid */}
@@ -132,11 +116,17 @@ export default function AgencyPage() {
           <h2 className="font-Heading text-[20px] font-bold text-text-contrast flex items-center gap-2">
             <LinkIcon size={18} className="text-accent-pink" /> Linked Accounts
           </h2>
-          <div className="text-[13px] font-medium text-[var(--text-tertiary)] hidden sm:block">Active connections: {CLIENTS.length}/10</div>
+          <div className="text-[13px] font-medium text-(--text-tertiary) hidden sm:block">Active connections: {(data?.clients || []).length}/10</div>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {CLIENTS.map((client) => {
+          {loading && (
+             <div className="col-span-full flex flex-col items-center justify-center py-20 text-text-tertiary">
+                <Sparkles size={32} className="animate-spin mb-4 text-accent-pink" />
+                <p className="font-medium">Aggregating client performance data...</p>
+             </div>
+          )}
+          {!loading && data?.clients?.map((client) => {
             const isSelected = selected === client.id;
             return (
               <div
@@ -149,12 +139,12 @@ export default function AgencyPage() {
                 }`}
               >
                 {/* Status Indicator */}
-                <div className="absolute right-3 top-3">
-                  <span className="relative flex h-2.5 w-2.5">
-                    {client.trend === "up" && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--green)] opacity-75"></span>}
-                    <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${client.trend === "up" ? "bg-[var(--green)]" : "bg-[var(--red)]"}`}></span>
-                  </span>
-                </div>
+                  <div className="absolute right-3 top-3">
+                    <span className="relative flex h-2.5 w-2.5">
+                      {client.trend === "up" && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green opacity-75"></span>}
+                      <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${client.trend === "up" ? "bg-green" : "bg-red"}`}></span>
+                    </span>
+                  </div>
 
                 {/* Header */}
                 <div className="mb-5 flex items-center gap-4">
@@ -166,7 +156,7 @@ export default function AgencyPage() {
                   </div>
                   <div>
                     <div className="font-['Outfit'] text-[16px] font-bold text-text-contrast leading-tight mb-0.5">{client.name}</div>
-                    <div className="text-[12px] font-medium text-[var(--text-secondary)]">{client.handle} · {client.followers} followers</div>
+                    <div className="text-[12px] font-medium text-(--text-secondary)">{client.handle} · {client.followers} followers</div>
                   </div>
                 </div>
 
@@ -188,15 +178,15 @@ export default function AgencyPage() {
 
                 {/* Quick Actions */}
                 <div className="flex gap-2">
-                  <button className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface)] text-[12px] font-semibold text-[var(--text-primary)] transition-colors hover:bg-[var(--bg-overlay)] hover:text-text-contrast">
+                  <button className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-md border border-border-strong bg-bg-surface text-[12px] font-semibold text-text-primary transition-colors hover:bg-bg-overlay hover:text-text-contrast">
                     <Eye size={14} /> Dashboard
                   </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); handleExportReport(client.id); }}
                     className={`flex h-9 flex-1 items-center justify-center gap-1.5 rounded-md border text-[12px] font-semibold transition-colors ${
                       reportExported === client.id 
-                        ? "border-[rgba(16,185,129,0.3)] bg-[var(--green-dim)] text-[var(--green)]" 
-                        : "border-[var(--border-strong)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:bg-[var(--bg-overlay)] hover:text-text-contrast"
+                        ? "border-green/30 bg-green/10 text-green" 
+                        : "border-border-strong bg-bg-surface text-text-primary hover:bg-bg-overlay hover:text-text-contrast"
                     }`}
                   >
                     {reportExported === client.id ? (

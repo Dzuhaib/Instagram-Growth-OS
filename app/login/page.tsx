@@ -170,7 +170,7 @@ export default function LoginPage() {
             </div>
 
             <button
-              className="group relative w-full h-13 rounded-xl bg-text-contrast text-white font-black text-[14px] uppercase tracking-wider overflow-hidden transition-all active:scale-[0.98] shadow-lg shadow-text-contrast/10"
+              className="group relative w-full h-13 rounded-xl bg-text-contrast text-white font-black text-[14px] uppercase tracking-wider overflow-hidden transition-all active:scale-[0.98] shadow-lg shadow-text-contrast/10 mb-4"
               onClick={() => router.push("/dashboard")}
             >
               <div className="absolute inset-0 bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] transition-opacity" />
@@ -178,6 +178,14 @@ export default function LoginPage() {
               <span className="relative z-10 flex items-center justify-center gap-2 transition-colors">
                 Initialize Dashboard <ArrowRight size={17} />
               </span>
+            </button>
+
+            <button
+              className="flex w-full h-13 items-center justify-center gap-3 rounded-xl border border-border-subtle bg-white text-[14px] font-bold text-text-contrast transition-all hover:bg-bg-base hover:border-accent-pink hover:text-accent-pink active:scale-[0.98]"
+              onClick={() => router.push("/onboarding?method=instagram")}
+            >
+              <Instagram size={20} className="text-accent-pink" />
+              Login with Instagram
             </button>
 
             <div className="mt-10 pt-8 border-t border-border-subtle flex flex-col items-center gap-6">

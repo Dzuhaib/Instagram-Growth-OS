@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   TrendingUp,
   MessageSquare,
@@ -15,66 +15,19 @@ import {
 import { AreaChart, Area, ResponsiveContainer, Tooltip } from "recharts";
 import AnimatedCounter from "@/components/AnimatedCounter";
 
-const REACH_DATA = [
-  { day: "Mon", reach: 12000 },
-  { day: "Tue", reach: 18000 },
-  { day: "Wed", reach: 15000 },
-  { day: "Thu", reach: 24000 },
-  { day: "Fri", reach: 38000 },
-  { day: "Sat", reach: 42000 },
-  { day: "Sun", reach: 35000 },
-];
-
-const SCHEDULE = [
-  { day: "Mon", time: "6:00 PM", format: "Reel", score: 92 },
-  { day: "Wed", time: "12:00 PM", format: "Carousel", score: 85 },
-  { day: "Fri", time: "8:00 PM", format: "Reel", score: 98 },
-];
-
-const RECOMMENDATIONS = [
-  {
-    id: 1,
-    type: "Hook Fix",
-    impact: "High",
-    title: "Switch to outcome-led hooks",
-    desc: "Your last 3 Reels started with 'Here is how to...'. Our data shows hooks starting with 'I tried X for 30 days...' perform 4x better in your niche.",
-    action: "View Hook Templates",
-    color: "var(--accent-pink)",
-  },
-  {
-    id: 2,
-    type: "Posting Time",
-    impact: "High",
-    title: "You're missing peak Saturday traffic",
-    desc: "Saturday mornings account for 35% of your total weekly saves, but you haven't posted on a Saturday in 3 weeks.",
-    action: "Update Schedule",
-    color: "var(--green)",
-  },
-  {
-    id: 3,
-    type: "Niche Drift",
-    impact: "Medium",
-    title: "Recent posts are too broad",
-    desc: "Your audience engages most with 'fitness routines', but your last 2 posts were 'lifestyle vlogs'. This confuses the algorithm.",
-    action: "Check Niche Alignment",
-    color: "var(--amber)",
-  },
-  {
-    id: 4,
-    type: "Content Gap",
-    impact: "Medium",
-    title: "Untapped Topic: Meal Prep",
-    desc: "Competitors in your niche are seeing 2.3x higher reach on 'Meal Prep for Beginners' content. You have 0 posts on this topic.",
-    action: "Explore Gap Analysis",
-    color: "var(--accent-purple)",
-  },
-];
+interface DashboardData {
+  metrics: any[];
+  reachData: any[];
+  schedule: any[];
+  recommendations: any[];
+  newPoints: number;
+}
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="surface-glass rounded-lg border border-[var(--border-strong)] p-3 text-[13px] shadow-xl">
-        <div className="mb-1 text-[var(--text-tertiary)]">{label}</div>
+      <div className="surface-glass rounded-lg border border-(--border-strong) p-3 text-[13px] shadow-xl">
+        <div className="mb-1 text-(--text-tertiary)">{label}</div>
         <div className="font-bold text-accent-pink">
           {(payload[0].value / 1000).toFixed(1)}K Reach
         </div>
@@ -85,7 +38,50 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export default function DashboardPage() {
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
   const [hoveredRec, setHoveredRec] = useState<number | null>(null);
+  const [name, setName] = useState("");
+  const [handle, setHandle] = useState("");
+
+  const fetchDashboardData = async () => {
+    setLoading(true);
+    const storedName = localStorage.getItem("growth_os_name") || "Creator";
+    const storedHandle = localStorage.getItem("growth_os_handle") || "@handle";
+    const niche = localStorage.getItem("growth_os_niche") || "General";
+    const goal = localStorage.getItem("growth_os_goal") || "Growth";
+    
+    setName(storedName);
+    setHandle(storedHandle);
+
+    try {
+      const response = await fetch("/api/dashboard", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ niche, goal }),
+      });
+      const json = await response.json();
+      setData(json);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const getMetricIcon = (iconName: string) => {
+    switch (iconName) {
+      case "TrendingUp": return TrendingUp;
+      case "Heart": return Heart;
+      case "Share2": return Share2;
+      case "Target": return Target;
+      default: return TrendingUp;
+    }
+  };
 
   return (
     <div className="pb-12">
@@ -93,42 +89,50 @@ export default function DashboardPage() {
       <div className="mb-10 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
         <div>
           <h1 className="font-['Outfit'] text-3xl font-bold tracking-tight text-text-contrast mb-2">
-            Welcome back, Jamie
+            Welcome back, {name || "Creator"}
           </h1>
-          <p className="text-[15px] text-[var(--text-secondary)]">
-            Your AI has processed 14 new data points since yesterday. You have{" "}
-            <strong className="text-[var(--text-primary)]">4 new recommendations</strong>.
+          <div className="flex items-center gap-2 mb-3">
+             <span className="text-[13px] font-bold text-accent-pink bg-accent-pink/10 px-2 py-0.5 rounded border border-accent-pink/20">
+               {handle || "@connected"}
+             </span>
+             <span className="text-[12px] text-(--text-tertiary) flex items-center gap-1">
+               <Zap size={10} className="text-amber" /> AI Analyzed
+             </span>
+          </div>
+          <p className="text-[15px] text-(--text-secondary)">
+            Your AI has processed {data?.newPoints || 0} new data points since yesterday. You have{" "}
+            <strong className="text-(--text-primary)">{(data?.recommendations || []).length} new recommendations</strong>.
           </p>
         </div>
-        <button className="btn-accent shrink-0 text-[13px] px-6">
-          <Zap size={15} /> Score New Content
+        <button className="btn-accent shrink-0 text-[13px] px-6 h-11">
+          <Sparkles size={15} /> Score New Content
         </button>
       </div>
 
       {/* Metrics Row */}
       <div className="mb-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          { label: "Est. Reach This Week", value: 184000, prefix: "", suffix: "", icon: TrendingUp, color: "var(--accent-pink)" },
-          { label: "Engagement Rate", value: 7.2, prefix: "", suffix: "%", icon: Heart, color: "var(--green)" },
-          { label: "DM Share Score", value: 94, prefix: "", suffix: "/100", icon: Share2, color: "var(--accent-purple)" },
-          { label: "Niche Consistency", value: 88, prefix: "", suffix: "%", icon: Target, color: "var(--amber)" },
-        ].map((metric) => (
-          <div key={metric.label} className="surface-glass p-6 transition-all hover:border-[var(--border-strong)]">
-            <div className="mb-3 flex items-center justify-between">
-              <div 
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-raised)]"
-              >
-                <metric.icon size={18} style={{ color: metric.color }} />
-              </div>
-            </div>
-            <div className="mb-1 flex items-baseline gap-1 font-['Outfit'] text-3xl font-bold text-text-contrast tracking-tight">
-              {metric.prefix}
-              <AnimatedCounter value={metric.value} />
-              {metric.suffix}
-            </div>
-            <div className="text-[13px] font-medium text-[var(--text-tertiary)]">{metric.label}</div>
-          </div>
+        {loading && [1, 2, 3, 4].map((i) => (
+          <div key={i} className="surface-glass p-6 h-[100px] animate-pulse bg-bg-raised" />
         ))}
+        {!loading && data?.metrics?.map((metric: any) => {
+          const Icon = getMetricIcon(metric.icon);
+          return (
+            <div key={metric.label} className="surface-glass p-6 transition-all hover:border-(--border-strong)">
+              <div className="mb-3 flex items-center justify-between">
+                <div 
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-(--border-subtle) bg-(--bg-raised)"
+                >
+                  <Icon size={18} style={{ color: metric.color }} />
+                </div>
+              </div>
+              <div className="mb-1 flex items-baseline gap-1 font-['Outfit'] text-3xl font-bold text-text-contrast tracking-tight">
+                <AnimatedCounter value={metric.value} />
+                {metric.suffix}
+              </div>
+              <div className="text-[13px] font-medium text-(--text-tertiary)">{metric.label}</div>
+            </div>
+          );
+        })}
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">
@@ -139,15 +143,15 @@ export default function DashboardPage() {
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <h2 className="font-['Outfit'] text-lg font-bold text-text-contrast">Reach Velocity</h2>
-                <span className="text-[13px] text-[var(--text-secondary)]">Last 7 days performance</span>
+                <span className="text-[13px] text-(--text-secondary)">Last 7 days performance</span>
               </div>
-              <div className="flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-raised)] px-3 py-1 text-xs font-semibold text-[var(--green)]">
+              <div className="flex items-center gap-2 rounded-full border border-border-subtle bg-bg-raised px-3 py-1 text-xs font-semibold text-green">
                 <TrendingUp size={12} /> +24% vs last week
               </div>
             </div>
             <div className="h-[260px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={REACH_DATA} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+                <AreaChart data={data?.reachData || []} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="reachGradient" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="var(--accent-pink)" stopOpacity={0.3} />
@@ -178,27 +182,30 @@ export default function DashboardPage() {
               </button>
             </div>
             <div className="flex flex-col gap-3">
-              {SCHEDULE.map((slot, i) => (
+              {loading && [1, 2, 3].map((i) => (
+                <div key={i} className="h-20 animate-pulse rounded-xl bg-(--bg-raised)" />
+              ))}
+              {!loading && data?.schedule?.map((slot: any, i: number) => (
                 <div
                   key={i}
-                  className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-raised)] p-4 transition-colors hover:border-[var(--border-strong)] hover:bg-[var(--bg-overlay)]"
+                  className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-(--border-subtle) bg-(--bg-raised) p-4 transition-colors hover:border-(--border-strong) hover:bg-(--bg-overlay)"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 flex-col items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] font-['Outfit'] font-bold text-text-contrast shadow-inner">
+                    <div className="flex h-12 w-12 flex-col items-center justify-center rounded-lg border border-(--border-subtle) bg-(--bg-surface) font-['Outfit'] font-bold text-text-contrast shadow-inner">
                       <span className="text-[13px]">{slot.day}</span>
                     </div>
                     <div>
                       <div className="font-semibold text-[15px] text-text-contrast flex items-center gap-2">
-                        <Calendar size={14} className="text-[var(--text-tertiary)]" />
+                        <Calendar size={14} className="text-(--text-tertiary)" />
                         {slot.time}
                       </div>
-                      <div className="text-[13px] font-medium text-[var(--text-secondary)]">Format: <span className="text-text-contrast">{slot.format}</span></div>
+                      <div className="text-[13px] font-medium text-(--text-secondary)">Format: <span className="text-text-contrast">{slot.format}</span></div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="flex flex-col items-end">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-tertiary)]">Score</span>
-                      <span className="font-['Outfit'] text-[18px] font-bold text-[var(--green)]">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-(--text-tertiary)">Score</span>
+                      <span className="font-['Outfit'] text-[18px] font-bold text-green">
                         {slot.score}
                       </span>
                     </div>
@@ -221,15 +228,18 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex flex-col gap-4">
-            {RECOMMENDATIONS.map((rec, i) => (
+            {loading && [1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-32 animate-pulse rounded-xl bg-(--bg-raised)" />
+            ))}
+            {!loading && data?.recommendations?.map((rec: any, i: number) => (
               <div
                 key={rec.id}
                 onMouseEnter={() => setHoveredRec(rec.id)}
                 onMouseLeave={() => setHoveredRec(null)}
                 className={`relative overflow-hidden rounded-xl border p-5 transition-all duration-300 ${
                   hoveredRec === rec.id
-                    ? "border-[var(--border-strong)] bg-[var(--bg-overlay)] shadow-lg"
-                    : "border-[var(--border-subtle)] bg-[var(--bg-raised)]"
+                    ? "border-(--border-strong) bg-(--bg-overlay) shadow-lg"
+                    : "border-(--border-subtle) bg-(--bg-raised)"
                 }`}
               >
                 {/* Ranking Number */}
@@ -252,7 +262,7 @@ export default function DashboardPage() {
                     {rec.type}
                   </div>
                   {rec.impact === "High" && (
-                    <div className="flex items-center gap-1 text-[11px] font-bold text-[var(--red)] uppercase tracking-wide">
+                    <div className="flex items-center gap-1 text-[11px] font-bold text-red uppercase tracking-wide">
                       <AlertTriangle size={12} /> High Impact
                     </div>
                   )}
@@ -262,7 +272,7 @@ export default function DashboardPage() {
                   {rec.title}
                 </h3>
                 
-                <p className="mb-4 text-[13px] leading-relaxed text-[var(--text-secondary)]">
+                <p className="mb-4 text-[13px] leading-relaxed text-(--text-secondary)">
                   {rec.desc}
                 </p>
 

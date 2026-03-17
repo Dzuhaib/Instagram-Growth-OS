@@ -31,7 +31,7 @@ export default function RefundPage() {
 
           <section>
             <h2 className="text-xl font-heading text-text-contrast mb-4">14-Day Money-Back Guarantee</h2>
-            <p>If you subscribe to GrowthOS and find that it does not fit your needs, we offer a "no questions asked" 14-day money-back guarantee for your first payment. If you wish to cancel within your first 14 days and get a refund, simply reach out to our team.</p>
+            <p>If you subscribe to GrowthOS and find that it does not fit your needs, we offer a &quot;no questions asked&quot; 14-day money-back guarantee for your first payment. If you wish to cancel within your first 14 days and get a refund, simply reach out to our team.</p>
           </section>
 
           <section>

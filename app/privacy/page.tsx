@@ -46,7 +46,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-xl font-heading text-text-contrast mb-4">4. Third-Party Services</h2>
-            <p>Our payment processing is handled independently by Paddle, meaning all checkout information is processed under Paddle's privacy policies. We also use secure connection protocols when communicating with Meta's servers.</p>
+            <p>Our payment processing is handled independently by Paddle, meaning all checkout information is processed under Paddle&apos;s privacy policies. We also use secure connection protocols when communicating with Meta&apos;s servers.</p>
           </section>
 
           <section>

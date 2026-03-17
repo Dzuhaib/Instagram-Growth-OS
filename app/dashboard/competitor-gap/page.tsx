@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   TrendingUp,
   Search,
@@ -11,14 +11,31 @@ import {
   Target,
   Sparkles,
   BarChart3,
-  ChevronDown,
+  X,
 } from "lucide-react";
 
 export default function CompetitorGapPage() {
-  const [competitors, setCompetitors] = useState(["@gymshark", "@chrisbumstead"]);
+  const [competitors, setCompetitors] = useState<string[]>([]);
   const [newCompetitor, setNewCompetitor] = useState("");
   const [analysing, setAnalysing] = useState(false);
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<{
+    id: number;
+    topic: string;
+    opportunity: string;
+    competitorReach: string;
+    yourReach: string;
+    why: string;
+    recommendations: string[];
+  }[] | null>(null);
+  const [niche, setNiche] = useState("");
+
+  useEffect(() => {
+    const storedNiche = localStorage.getItem("growth_os_niche") || "General";
+    setNiche(storedNiche);
+    
+    // Default competitors based on niche if none added yet? 
+    // Actually better to start empty or with a message.
+  }, []);
 
   const addCompetitor = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,54 +50,25 @@ export default function CompetitorGapPage() {
     setCompetitors(competitors.filter((c) => c !== handle));
   };
 
-  const runAnalysis = () => {
+  const runAnalysis = async () => {
     if (competitors.length === 0) return;
     setAnalysing(true);
     setResults(null);
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/competitor-gap", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ competitors, niche }),
+      });
+      if (!response.ok) throw new Error("Failed to analyze competitors");
+      const data = await response.json();
+      setResults(data);
+    } catch (error) {
+      console.error(error);
+      alert("Error generating competitor gaps. Make sure your OpenAI API key is configured.");
+    } finally {
       setAnalysing(false);
-      setResults([
-        {
-          id: 1,
-          topic: "Full Day of Eating (Bulking)",
-          opportunity: "High",
-          competitorReach: "450K avg / post",
-          yourReach: "N/A (0 posts)",
-          why: "Audiences in your niche are highly driven by transformational tracking. @chrisbumstead saw a 34% spike in profile visits when posting this topic.",
-          recommendations: [
-            "Post a 60s Reel showing exactly what you eat on a high-carb day",
-            "Use the hook: 'How I eat 4,000 calories without feeling sluggish'",
-            "Include exact protein macros in the caption text (AI flags this as a highly searched term)",
-          ],
-        },
-        {
-          id: 2,
-          topic: "Form Correction (Deadlifts)",
-          opportunity: "Medium",
-          competitorReach: "220K avg / post",
-          yourReach: "45K avg (2 posts, 6mo ago)",
-          why: "Educational 'Do this, Not that' content drives the highest save rate in the fitness niche right now.",
-          recommendations: [
-            "Create a split-screen video comparing common mistakes",
-            "Use text overlays pointing exactly to the lower back",
-            "Call to action: 'Save this for your next pull day'",
-          ],
-        },
-        {
-          id: 3,
-          topic: "Mobility Routines",
-          opportunity: "High",
-          competitorReach: "380K avg / post",
-          yourReach: "12K avg (1 post)",
-          why: "Longevity and joint health are currently out-pacing pure hypertrophy content in algorithm preference.",
-          recommendations: [
-            "Post a 3-move morning mobility sequence",
-            "Caption focus: 'Doing this every morning fixed my knee pain'",
-            "Use a trending low-fi audio track to boost algorithmic push",
-          ],
-        },
-      ]);
-    }, 3200);
+    }
   };
 
   return (
@@ -92,7 +80,7 @@ export default function CompetitorGapPage() {
             <Target className="text-accent-pink" size={28} /> Competitor Gap
           </h1>
           <p className="text-[15px] text-text-secondary">
-            Discover what's working for your competitors that you aren't doing yet.
+            Discover what's working for your competitors in the <strong className="text-text-contrast">{niche}</strong> niche.
           </p>
         </div>
       </div>
@@ -120,17 +108,20 @@ export default function CompetitorGapPage() {
                       onClick={() => removeCompetitor(c)}
                       className="ml-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-bg-overlay text-[10px] text-text-secondary hover:bg-red/10 hover:text-red transition-colors"
                     >
-                      ×
+                      <X size={10} />
                     </button>
                   </div>
                 ))}
+                {competitors.length === 0 && (
+                  <div className="text-[12px] text-text-tertiary italic p-2">No competitors added.</div>
+                )}
               </div>
 
               {competitors.length < 3 && (
                 <form onSubmit={addCompetitor} className="flex gap-2">
                   <input
                     className="input-field bg-bg-raised border border-border-subtle focus:border-accent-pink focus:ring-1 focus:ring-accent-pink"
-                    placeholder="E.g. @gymshark"
+                    placeholder="E.g. @username"
                     value={newCompetitor}
                     onChange={(e) => setNewCompetitor(e.target.value)}
                   />
@@ -145,11 +136,11 @@ export default function CompetitorGapPage() {
               )}
             </div>
 
-            <div className="mb-8 rounded-lg border border-border-subtle bg-bg-raised p-5 text-[13px] text-text-secondary leading-relaxed">
+            <div className="mb-8 rounded-lg border border-border-subtle bg-bg-raised p-5 text-[13px] text-text-secondary leading-relaxed shadow-inner">
               <div className="mb-2 flex items-center gap-2 font-Heading font-bold text-text-contrast text-[15px]">
-                <Zap size={16} className="text-amber" /> How this works
+                <Zap size={16} className="text-amber" /> Algorithm Insight
               </div>
-              AI scans the last 100 posts of your competitors. It cross-references their highest-performing topics against your own content library to find "Gaps" — topics with proven reach that you are missing out on.
+              AI scans competitor data to find "Gaps" — topics with proven reach that you are missing out on.
             </div>
 
             <button
@@ -158,7 +149,7 @@ export default function CompetitorGapPage() {
               disabled={competitors.length === 0 || analysing}
             >
               {analysing ? (
-                <><Sparkles size={16} className="animate-pulse" /> Scanning competitor data...</>
+                <><Sparkles size={16} className="animate-pulse" /> Scanning graphs...</>
               ) : (
                 <><BarChart3 size={16} /> Run Gap Analysis</>
               )}
@@ -169,19 +160,19 @@ export default function CompetitorGapPage() {
         {/* Right Column: Results */}
         <div>
           {!analysing && !results && (
-            <div className="surface-glass flex h-full min-h-[500px] flex-col items-center justify-center p-12 text-center opacity-80">
+            <div className="surface-glass flex h-full min-h-[500px] flex-col items-center justify-center p-12 text-center opacity-80 border-border-subtle">
               <div className="mb-5 flex h-[72px] w-[72px] items-center justify-center rounded-2xl bg-bg-raised border border-border-strong shadow-inner">
                 <Target size={32} className="text-text-tertiary" />
               </div>
-              <h3 className="mb-2 font-Heading text-[20px] font-bold text-text-contrast">Ready to uncover gaps</h3>
+              <h3 className="mb-2 font-Heading text-[20px] font-bold text-text-contrast">Awaiting Competitors</h3>
               <p className="text-[14px] text-text-secondary max-w-sm">
-                Add up to 3 competitors and run an analysis to find untapped content opportunities.
+                Add target accounts on the left to uncover untapped content opportunities for <strong className="text-text-contrast">{niche}</strong>.
               </p>
             </div>
           )}
 
           {analysing && (
-            <div className="surface-glass flex h-full min-h-[500px] flex-col items-center justify-center p-12 text-center">
+            <div className="surface-glass flex h-full min-h-[500px] flex-col items-center justify-center p-12 text-center border-border-subtle">
               <div className="relative mb-6 flex h-24 w-24 items-center justify-center">
                 <div className="absolute inset-0 rounded-full border border-accent-pink/10"></div>
                 <div className="absolute inset-0 rounded-full border-t border-accent-pink animate-spin" style={{ animationDuration: "1.5s" }}></div>
@@ -189,33 +180,33 @@ export default function CompetitorGapPage() {
                 <Sparkles size={28} className="text-accent-pink animate-pulse" />
               </div>
               
-              <div className="mb-2 font-Heading text-[20px] font-bold text-text-contrast">Cross-referencing graphs</div>
+              <div className="mb-2 font-Heading text-[20px] font-bold text-text-contrast">Cross-referencing Graphs</div>
               <div className="text-[14px] text-text-secondary">
-                Comparing {competitors.length * 100} competitor posts against your library...
+                Comparing competitor patterns against your library...
               </div>
             </div>
           )}
 
           {results && (
-            <div className="flex flex-col gap-6">
-              {results.map((gap: any, index: number) => (
+            <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              {results?.map((gap: any, index: number) => (
                 <div key={gap.id} className="surface-glass overflow-hidden border border-border-subtle transition-all hover:border-border-strong hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)]">
                   {/* Card Header */}
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-border-subtle bg-bg-raised p-5 gap-4">
                     <div className="flex items-center gap-4">
-                      <div className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl bg-bg-surface border border-border-subtle shadow-inner font-Heading text-[18px] font-black text-text-contrast italic opacity-80">
+                      <div className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl bg-bg-surface border border-border-subtle shadow-inner font-Heading text-[18px] font-black text-text-contrast italic">
                         #{index + 1}
                       </div>
                       <div>
                         <div className="mb-0.5 font-Heading text-[17px] font-bold text-text-contrast tracking-tight">{gap.topic}</div>
                         <div className="flex items-center gap-2 text-[12px] font-semibold text-text-tertiary uppercase tracking-wider">
-                          <Eye size={12} /> Untapped Matrix
+                          <Eye size={12} /> Algo Pattern Found
                         </div>
                       </div>
                     </div>
                     
                     <div
-                      className="flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-bold tracking-wide uppercase"
+                      className="flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-bold tracking-wide uppercase shadow-sm"
                       style={{
                         color: gap.opportunity === "High" ? "var(--green)" : "var(--amber)",
                         borderColor: gap.opportunity === "High" ? "rgba(16,185,129,0.2)" : "rgba(245,158,11,0.2)",
@@ -242,7 +233,7 @@ export default function CompetitorGapPage() {
                   <div className="p-6">
                     <div className="mb-5 rounded-lg border border-accent-pink/20 bg-gradient-to-r from-bg-raised to-bg-surface p-4 shadow-inner">
                       <div className="mb-2 flex items-center gap-2 font-Heading text-[14px] font-bold text-text-contrast">
-                        <TrendingUp size={16} className="text-accent-pink" /> Why this matters
+                        <TrendingUp size={16} className="text-accent-pink" /> Strategic Gap
                       </div>
                       <p className="text-[13.5px] leading-relaxed text-text-primary font-medium font-sans">
                         {gap.why}
@@ -254,9 +245,9 @@ export default function CompetitorGapPage() {
                         <Lightbulb size={14} /> Playbook to execute
                       </div>
                       <div className="flex flex-col gap-3 pl-2 border-l border-border-strong ml-[7px]">
-                        {gap.recommendations.map((rec: string, i: number) => (
-                          <div key={i} className="flex items-start gap-3 relative before:absolute before:content-[''] before:w-2 before:h-[1px] before:bg-border-strong before:-left-2 before:top-2.5">
-                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-bg-raised border border-border-subtle text-[10px] font-bold text-accent-pink z-10">
+                        {gap?.recommendations?.map((rec: string, i: number) => (
+                          <div key={i} className="flex items-start gap-3">
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-bg-raised border border-border-subtle text-[10px] font-bold text-accent-pink">
                               {i + 1}
                             </span>
                             <span className="text-[13.5px] leading-relaxed text-text-secondary pt-[1px]">{rec}</span>
@@ -266,7 +257,7 @@ export default function CompetitorGapPage() {
                     </div>
                     
                     <button className="mt-8 flex w-full items-center justify-center gap-2 rounded-lg border border-border-strong bg-bg-raised h-[44px] text-[13px] font-semibold text-text-contrast transition-all hover:bg-bg-overlay hover:border-accent-pink/30 hover:text-accent-pink">
-                      Draft a post about this <ArrowRight size={14} />
+                      Score this content concept <ArrowRight size={14} />
                     </button>
                   </div>
                 </div>

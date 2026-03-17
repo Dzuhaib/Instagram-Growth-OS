@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Target,
   TrendingUp,
@@ -12,35 +12,60 @@ import {
   Sparkles,
   BarChart3,
   Search,
+  Zap,
 } from "lucide-react";
 
-const TRENDS = [
-  { rank: 1, keyword: "hyrox training", growth: "+145%", volume: "High", status: "rising" },
-  { rank: 2, keyword: "gut health protocol", growth: "+82%", volume: "High", status: "rising" },
-  { rank: 3, keyword: "zone 2 cardio", growth: "+64%", volume: "Medium", status: "rising" },
-  { rank: 4, keyword: "75 hard results", growth: "-24%", volume: "Medium", status: "falling" },
-  { rank: 5, keyword: "keto meal prep", growth: "-41%", volume: "Low", status: "falling" },
-];
+interface TrendItem {
+  rank: number;
+  keyword: string;
+  growth: string;
+  volume: string;
+  status: "rising" | "falling";
+}
 
-const CONTENT_GAPS = [
-  {
-    topic: "Meal Prep for Shift Workers",
-    demand: 88,
-    supply: 24,
-    difficulty: "Low",
-    insight: "High search volume between 10PM-2AM. Very few creators making niche content for night shifts.",
-  },
-  {
-    topic: "Mobility vs Flexibility differences",
-    demand: 76,
-    supply: 41,
-    difficulty: "Medium",
-    insight: "Educational gap. Users are confused by terminology and seeking simple visual comparisons.",
-  },
-];
+interface GapItem {
+  topic: string;
+  demand: number;
+  supply: number;
+  difficulty: string;
+  insight: string;
+}
+
+interface NicheData {
+  trends: TrendItem[];
+  gaps: GapItem[];
+  saturation: number;
+  shifts: string[];
+}
 
 export default function NicheTrackerPage() {
   const [activeTab, setActiveTab] = useState("trends");
+  const [data, setData] = useState<NicheData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [niche, setNiche] = useState("");
+
+  const fetchNicheData = async () => {
+    setLoading(true);
+    const storedNiche = localStorage.getItem("growth_os_niche") || "General";
+    setNiche(storedNiche);
+    try {
+      const response = await fetch("/api/niche-tracker", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ niche: storedNiche }),
+      });
+      const json = await response.json();
+      setData(json);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNicheData();
+  }, []);
 
   return (
     <div className="pb-12 max-w-6xl mx-auto">
@@ -82,15 +107,28 @@ export default function NicheTrackerPage() {
         {/* Main Content Area */}
         <div className="flex flex-col gap-8">
           
-          {activeTab === "trends" && (
+          {loading && (
+            <div className="surface-glass flex min-h-[400px] flex-col items-center justify-center p-12 text-center">
+              <Sparkles size={48} className="text-accent-pink animate-pulse mb-4" />
+              <h2 className="text-lg font-bold text-text-contrast">Scanning algorithm signals...</h2>
+              <p className="text-sm text-text-secondary">AI is aggregating real-time niche demand.</p>
+            </div>
+          )}
+
+          {!loading && data && activeTab === "trends" && (
             <div className="surface-glass overflow-hidden border border-border-subtle shadow-[0_8px_30px_rgba(0,0,0,0.3)] hover:border-border-strong transition-all">
               <div className="border-b border-border-subtle bg-bg-raised px-6 py-5 flex items-center justify-between">
                 <h2 className="font-Heading text-[18px] font-bold text-text-contrast flex items-center gap-2">
                   <Flame size={18} className="text-amber" /> Trending Keywords
                 </h2>
-                <span className="text-[12px] font-bold uppercase tracking-wider text-text-tertiary px-3 py-1 rounded bg-bg-surface border border-border-subtle shadow-inner">
-                  Last 7 Days
-                </span>
+                <div className="flex items-center gap-2">
+                  <button onClick={fetchNicheData} className="p-2 hover:bg-bg-overlay rounded-lg transition-colors text-text-tertiary hover:text-text-contrast">
+                     <Activity size={16} />
+                  </button>
+                  <span className="text-[12px] font-bold uppercase tracking-wider text-text-tertiary px-3 py-1 rounded bg-bg-surface border border-border-subtle shadow-inner">
+                    Last 7 Days
+                  </span>
+                </div>
               </div>
               <table className="w-full text-left text-[14px]">
                 <thead className="bg-bg-surface text-[11px] font-semibold uppercase tracking-wider text-text-tertiary border-b border-border-subtle">
@@ -102,7 +140,7 @@ export default function NicheTrackerPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border-subtle bg-bg-base">
-                  {TRENDS.map((trend) => (
+                  {data?.trends?.map((trend) => (
                     <tr key={trend.keyword} className="transition-colors hover:bg-bg-overlay group">
                       <td className="px-6 py-4 text-center font-Heading text-[16px] font-bold text-text-tertiary italic">
                         {trend.rank}
@@ -138,9 +176,9 @@ export default function NicheTrackerPage() {
             </div>
           )}
 
-          {activeTab === "gaps" && (
+          {!loading && data && activeTab === "gaps" && (
             <div className="flex flex-col gap-6">
-              {CONTENT_GAPS.map((gap, i) => (
+              {data?.gaps?.map((gap, i) => (
                 <div key={i} className="surface-glass p-6 border border-border-subtle transition-all hover:border-border-strong hover:shadow-xl group">
                   <div className="mb-4 flex flex-col sm:flex-row justify-between gap-4 border-b border-border-subtle pb-4">
                     <div>
@@ -191,45 +229,52 @@ export default function NicheTrackerPage() {
 
         {/* Right Sidebar - Niche Health Profile */}
         <div className="flex flex-col gap-6">
-          <div className="surface-glass p-0 overflow-hidden border-border-strong shadow-lg">
+          <div className="surface-glass p-0 overflow-hidden border border-border-strong shadow-lg">
             <div className="border-b border-border-subtle bg-gradient-to-br from-bg-surface to-bg-raised p-6 text-center shadow-inner">
-              <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-bg-raised border border-border-strong shadow-inner text-[10px] font-bold text-text-contrast">
+              <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-bg-raised border border-border-strong shadow-inner">
                 <Target size={28} className="text-accent-purple" />
               </div>
-              <h3 className="font-Heading text-[18px] font-bold text-text-contrast mb-1">Fitness & Hybrid</h3>
-              <p className="text-[13px] text-text-secondary">Your Primary Niche</p>
+              <h3 className="font-Heading text-[18px] font-bold text-text-contrast mb-1 whitespace-nowrap overflow-hidden text-ellipsis px-2">
+                {niche || "General"}
+              </h3>
+              <p className="text-[13px] text-text-secondary uppercase tracking-widest font-bold">Primary Niche</p>
             </div>
             
             <div className="p-6">
                <div className="mb-6">
                   <div className="mb-2 flex items-center justify-between text-[13px] font-semibold text-text-contrast">
                      Overall Saturation
-                     <span className="text-amber">72%</span>
+                     <span className="text-amber">{data?.saturation || 0}%</span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-bg-raised overflow-hidden shadow-inner border border-border-subtle">
-                     <div className="h-full bg-amber transition-all" style={{ width: '72%' }}></div>
+                     <div className="h-full bg-amber transition-all duration-1000" style={{ width: `${data?.saturation || 0}%` }}></div>
                   </div>
-                  <p className="mt-2 text-[12px] text-text-secondary leading-relaxed">
-                     The broad fitness niche is highly saturated. Growth requires pivoting into sub-niches (e.g. Hyrox) or targeting specific demographics.
+                  <p className="mt-3 text-[12px] text-text-secondary leading-relaxed">
+                     {data && data.saturation > 70 
+                       ? "The niche is highly saturated. Consider sub-niching for faster growth." 
+                       : data ? "Moderate saturation detected. Focus on high-quality delivery." : "Fetching niche health data..."}
                   </p>
                </div>
 
                <div className="border-t border-border-subtle pt-6">
                   <h4 className="mb-4 text-[12px] font-bold uppercase tracking-widest text-text-tertiary flex items-center gap-2">
-                     <TrendingUp size={14} /> Recommended Shifts
+                     <Zap size={14} className="text-amber" /> Recommended Shifts
                   </h4>
                   <ul className="flex flex-col gap-3">
-                     {["Hybrid Athlete Training", "Zone 2 specific cardio", "Longevity protocols"].map((shift, i) => (
+                     {(data?.shifts || []).map((shift, i) => (
                         <li key={i} className="flex items-start gap-2 text-[13px] font-medium text-text-primary">
                            <ChevronRight size={16} className="text-accent-pink shrink-0 mt-[1px]" />
                            {shift}
                         </li>
                      ))}
+                     {(!data || (data?.shifts?.length || 0) === 0) && (
+                       <li className="text-[12px] text-text-tertiary italic">Generating AI insights...</li>
+                     )}
                   </ul>
                </div>
 
-               <button className="btn-secondary w-full justify-center h-10 mt-6 shadow-sm border-border-strong bg-bg-raised hover:bg-bg-overlay hover:text-text-contrast">
-                 Edit Niche Parameters
+               <button className="btn-secondary w-full justify-center h-10 mt-8 shadow-sm border-border-strong bg-bg-raised hover:bg-bg-overlay hover:text-text-contrast">
+                 Edit Parameters
                </button>
             </div>
           </div>

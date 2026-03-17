@@ -367,7 +367,7 @@ export default function LandingPage() {
           </div>
 
           {[
-            { icon: Activity, title: "Predictive Windows", desc: "Our models analyze your account's historical heartbeat to predict optimal posting times down to the minute. No more guessing when your audience is awake." },
+            { icon: Activity, title: "Predictive Windows", desc: "Our models analyze your account&apos;s historical heartbeat to predict optimal posting times down to the minute. No more guessing when your audience is awake." },
             { icon: Shield, title: "Niche Protection", desc: "Meta categorizes accounts strictly. We read your data to alert you when your content strays off-niche, preventing algorithmic deprioritization." },
             { icon: Zap, title: "Algorithmic Scoring", desc: "Score your caption and hooks before you publish. We rate your draft against competitive baselines and suggest immediate changes for reach velocity." },
             { icon: Box, title: "Gap Intel", desc: "We track your closest competitors and instantly map out the specific content formats they are succeeding with that you have completely ignored." }
@@ -472,7 +472,7 @@ export default function LandingPage() {
           {[
             { 
               q: "Is this safe for my Instagram account?", 
-              a: "Absolutely. GrowthOS uses the official Meta Graph API. We never ask for your password and we do not perform automated actions like liking or following. It is 100% read-only and compliant with Instagram's terms of service." 
+              a: "Absolutely. GrowthOS uses the official Meta Graph API. We never ask for your password and we do not perform automated actions like liking or following. It is 100% read-only and compliant with Instagram&apos;s terms of service." 
             },
             { 
               q: "How does the AI Content Scorer work?", 
@@ -488,7 +488,7 @@ export default function LandingPage() {
             },
             { 
               q: "How often are the niche trends updated?", 
-              a: "Niche data is refreshed in real-time. As soon as a content trend begins to 'hockey stick' in your category, our system flags it with an 'Opportunity Score'." 
+              a: "Niche data is refreshed in real-time. As soon as a content trend begins to &apos;hockey stick&apos; in your category, our system flags it with an &apos;Opportunity Score&apos;." 
             }
           ].map((item, i) => (
             <div key={i} className="p-6 rounded-2xl bg-bg-surface border border-text-contrast/5 hover:border-text-contrast/10 transition-colors">
