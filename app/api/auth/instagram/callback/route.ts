@@ -50,10 +50,9 @@ export async function GET(req: Request) {
 
     const accessToken = tokenData.access_token;
 
-    // Step 2: Fetch Instagram Business Profile
-    // For instagram_business_basic scope, the correct endpoint is v21.0 with 'id,username,name'
+    // Step 2: Fetch Instagram Business Profile (v25.0 matches Meta Dashboard setting)
     const profileResponse = await fetch(
-      `https://graph.instagram.com/v21.0/me?fields=id,username,name&access_token=${accessToken}`
+      `https://graph.instagram.com/v25.0/me?fields=id,username,name&access_token=${accessToken}`
     );
     const profileData = await profileResponse.json();
 
