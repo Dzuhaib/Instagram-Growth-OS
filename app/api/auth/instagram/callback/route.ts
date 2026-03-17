@@ -50,14 +50,19 @@ export async function GET(req: Request) {
 
     const accessToken = tokenData.access_token;
 
-    // Step 2: Fetch Instagram Profile from Graph API
+    // Step 2: Fetch Instagram Business Profile
+    // For instagram_business_basic scope, the correct endpoint is v21.0 with 'id,username,name'
     const profileResponse = await fetch(
-      `https://graph.instagram.com/v19.0/me?fields=id,username,name,profile_picture_url&access_token=${accessToken}`
+      `https://graph.instagram.com/v21.0/me?fields=id,username,name&access_token=${accessToken}`
     );
     const profileData = await profileResponse.json();
 
+    console.log("Profile API Response:", JSON.stringify(profileData));
+
     if (profileData.error || !profileData.username) {
-      console.error("Profile Fetch Error:", profileData);
+      console.error("Profile Fetch Error:", JSON.stringify(profileData));
+      // Log token too to verify it wasn't empty (don't log in production)
+      console.error("Access Token prefix:", accessToken?.substring(0, 20));
       return NextResponse.redirect(
         new URL("/onboarding?error=profile_fetch_failed", req.url)
       );
