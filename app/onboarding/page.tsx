@@ -45,24 +45,30 @@ export default function OnboardingPage() {
 
   const handleConnect = () => {
     setConnecting(true);
-    
+
     const clientId = process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_ID;
     const redirectUri = process.env.NEXT_PUBLIC_INSTAGRAM_REDIRECT_URI;
-    const scope = "instagram_business_basic,instagram_business_content_publish,instagram_business_manage_comments";
-    
+    const scope =
+      "instagram_business_basic,instagram_business_content_publish,instagram_business_manage_comments";
+
+    // Debug log — remove after confirming it works
+    console.log("Client ID:", clientId);
+    console.log("Redirect URI:", redirectUri);
+
     if (!clientId || !redirectUri) {
       console.error("Instagram API credentials not configured.");
       setConnecting(false);
       return;
     }
 
-    const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code`;
-    
+    // Fixed: removed encodeURIComponent from redirectUri
+    // Instagram compares the redirect_uri as plain text against what is saved in the dashboard
+    const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`;
+
     window.location.href = authUrl;
   };
 
   const handleFinish = () => {
-    // Persist onboarding data for full-stack experience
     localStorage.setItem("growth_os_name", name || "Creator");
     localStorage.setItem("growth_os_niche", niche || "General");
     localStorage.setItem("growth_os_goal", goal || "Growth");
@@ -96,7 +102,7 @@ export default function OnboardingPage() {
         </div>
 
         <div className="surface-glass p-8 md:p-12 relative overflow-hidden shadow-2xl">
-           <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-accent-pink to-transparent opacity-50"></div>
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-accent-pink to-transparent opacity-50"></div>
 
           {/* Step 1: Welcome & Goal */}
           {step === 1 && (
@@ -105,7 +111,8 @@ export default function OnboardingPage() {
                 Welcome to GrowthOS
               </h1>
               <p className="mb-8 text-[15px] leading-relaxed text-(--text-secondary) text-center font-['Inter']">
-                Stop guessing what works. Let AI analyze your exact audience and scale your reach automatically.
+                Stop guessing what works. Let AI analyze your exact audience
+                and scale your reach automatically.
               </p>
 
               <div className="mb-8">
@@ -125,7 +132,12 @@ export default function OnboardingPage() {
                 What is your primary goal?
               </label>
               <div className="flex flex-col gap-3 mb-8">
-                {["Increase Followers", "Boost Reel Views", "Drive Link Clicks", "Manage Client Accounts"].map((g) => (
+                {[
+                  "Increase Followers",
+                  "Boost Reel Views",
+                  "Drive Link Clicks",
+                  "Manage Client Accounts",
+                ].map((g) => (
                   <button
                     key={g}
                     className={`flex items-center justify-between rounded-xl border p-4 text-left transition-all ${
@@ -135,8 +147,16 @@ export default function OnboardingPage() {
                     }`}
                     onClick={() => setGoal(g)}
                   >
-                    <span className="font-semibold text-[15px] font-heading">{g}</span>
-                    <div className={`flex h-5 w-5 items-center justify-center rounded-full border ${goal === g ? "border-transparent bg-accent-pink text-white" : "border-border-strong"}`}>
+                    <span className="font-semibold text-[15px] font-heading">
+                      {g}
+                    </span>
+                    <div
+                      className={`flex h-5 w-5 items-center justify-center rounded-full border ${
+                        goal === g
+                          ? "border-transparent bg-accent-pink text-white"
+                          : "border-border-strong"
+                      }`}
+                    >
                       {goal === g && <Check size={12} strokeWidth={3} />}
                     </div>
                   </button>
@@ -167,7 +187,8 @@ export default function OnboardingPage() {
                 Define your Niche
               </h1>
               <p className="mb-8 text-[15px] leading-relaxed text-(--text-secondary) font-['Inter']">
-                AI categorizes content differently depending on your industry. Help us set the baseline.
+                AI categorizes content differently depending on your industry.
+                Help us set the baseline.
               </p>
 
               <div className="mb-8">
@@ -182,11 +203,19 @@ export default function OnboardingPage() {
               </div>
 
               <div className="mb-8 flex flex-col gap-3">
-                 <div className="text-[12px] font-bold uppercase tracking-widest text-(--text-tertiary) flex items-center gap-2">
-                    <Sparkles size={14} className="text-accent-pink" /> Popular Categories
-                 </div>
+                <div className="text-[12px] font-bold uppercase tracking-widest text-(--text-tertiary) flex items-center gap-2">
+                  <Sparkles size={14} className="text-accent-pink" /> Popular
+                  Categories
+                </div>
                 <div className="flex flex-wrap gap-2">
-                  {["Fitness", "Marketing", "SaaS", "Real Estate", "E-commerce", "Education"].map((n) => (
+                  {[
+                    "Fitness",
+                    "Marketing",
+                    "SaaS",
+                    "Real Estate",
+                    "E-commerce",
+                    "Education",
+                  ].map((n) => (
                     <button
                       key={n}
                       className="rounded-full border border-border-subtle bg-bg-raised px-4 py-2 text-[13px] font-semibold text-(--text-secondary) transition-colors hover:border-accent-pink hover:text-text-contrast shadow-inner"
@@ -214,7 +243,7 @@ export default function OnboardingPage() {
               <button
                 onClick={() => setStep(2)}
                 className="absolute left-8 top-8 flex h-8 w-8 items-center justify-center rounded-full bg-bg-raised text-(--text-secondary) border border-border-subtle hover:bg-bg-overlay hover:text-text-contrast transition-colors"
-               >
+              >
                 <ArrowLeft size={16} />
               </button>
 
@@ -226,32 +255,56 @@ export default function OnboardingPage() {
                 Connect Instagram
               </h1>
               <p className="mb-10 text-[15px] leading-relaxed text-(--text-secondary) font-['Inter'] px-4">
-                We need read-only access to your Meta Graph API to analyze your follower activity and post performance.
+                We need read-only access to your Meta Graph API to analyze your
+                follower activity and post performance.
               </p>
 
               <div className="mb-12 flex flex-col gap-0 overflow-hidden rounded-xl border border-border-subtle bg-bg-raised text-left shadow-inner">
-                 <div className="px-5 py-3 border-b border-border-subtle bg-bg-surface">
-                    <span className="text-[12px] font-bold uppercase tracking-widest text-(--text-secondary)">Permissions required</span>
-                 </div>
+                <div className="px-5 py-3 border-b border-border-subtle bg-bg-surface">
+                  <span className="text-[12px] font-bold uppercase tracking-widest text-(--text-secondary)">
+                    Permissions required
+                  </span>
+                </div>
                 {[
-                  { Icon: Eye, label: "Read your posts & captions", why: "To score your content and analyze hooks" },
-                  { Icon: BarChart2, label: "View post insights", why: "To build your personal AI algorithm" },
-                  { Icon: Users, label: "Read demographic data", why: "To find peak posting times" },
+                  {
+                    Icon: Eye,
+                    label: "Read your posts & captions",
+                    why: "To score your content and analyze hooks",
+                  },
+                  {
+                    Icon: BarChart2,
+                    label: "View post insights",
+                    why: "To build your personal AI algorithm",
+                  },
+                  {
+                    Icon: Users,
+                    label: "Read demographic data",
+                    why: "To find peak posting times",
+                  },
                 ].map((perm, i) => (
-                  <div key={i} className="flex items-start gap-4 border-b border-border-subtle p-5 last:border-0 hover:bg-bg-overlay transition-colors">
+                  <div
+                    key={i}
+                    className="flex items-start gap-4 border-b border-border-subtle p-5 last:border-0 hover:bg-bg-overlay transition-colors"
+                  >
                     <div className="mt-0.5 rounded-full bg-accent-pink/10 p-2 border border-accent-pink/20">
                       <perm.Icon size={16} className="text-accent-pink" />
                     </div>
                     <div>
-                      <div className="font-semibold text-[14px] text-text-contrast mb-0.5">{perm.label}</div>
-                      <div className="text-[13px] text-(--text-tertiary)">{perm.why}</div>
+                      <div className="font-semibold text-[14px] text-text-contrast mb-0.5">
+                        {perm.label}
+                      </div>
+                      <div className="text-[13px] text-(--text-tertiary)">
+                        {perm.why}
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
 
               <div className="mb-8 flex items-center justify-center gap-2 text-[12px] font-semibold text-(--text-tertiary) uppercase tracking-wider mx-auto">
-                <Shield size={14} className="text-green" /> Official Meta API <span className="mx-2 opacity-30">|</span> <Lock size={14} /> 100% Read-Only
+                <Shield size={14} className="text-green" /> Official Meta API{" "}
+                <span className="mx-2 opacity-30">|</span>{" "}
+                <Lock size={14} /> 100% Read-Only
               </div>
 
               <button
@@ -261,7 +314,8 @@ export default function OnboardingPage() {
               >
                 {connecting ? (
                   <>
-                    <Loader2 size={18} className="animate-spin" /> Connecting to Meta...
+                    <Loader2 size={18} className="animate-spin" /> Connecting
+                    to Meta...
                   </>
                 ) : (
                   <>
@@ -282,7 +336,8 @@ export default function OnboardingPage() {
                 Data Synced Successfully
               </h1>
               <p className="mb-10 text-[15px] leading-relaxed text-(--text-secondary) font-['Inter']">
-                We&apos;ve processed 1,240 data points from {handle}. Your AI dashboard is ready.
+                We&apos;ve processed 1,240 data points from {handle}. Your AI
+                dashboard is ready.
               </p>
 
               <button
