@@ -61,11 +61,21 @@ export default function OnboardingPage() {
       return;
     }
 
-    // Clean the redirect URI to ensure no trailing slash
-    const cleanRedirectUri = redirectUri.endsWith("/") ? redirectUri.slice(0, -1) : redirectUri;
+    // Auto-detect the current domain to ensure the redirect_uri always matches the environment
+    const currentDomain = typeof window !== "undefined" ? window.location.origin : "";
+    let finalRedirectUri = redirectUri;
 
-    // Fixed: Re-added encodeURIComponent. It MUST be encoded for the browser to send it correctly,
-    // but the VALUE after decoding must match the dashboard exactly.
+    // If we are on Vercel but the env says localhost, auto-fix it
+    if (currentDomain.includes("vercel.app") && redirectUri.includes("localhost")) {
+      finalRedirectUri = `${currentDomain}/api/auth/instagram/callback`;
+      console.log("Auto-switched to Vercel Redirect URI:", finalRedirectUri);
+    }
+
+    const cleanRedirectUri = finalRedirectUri.endsWith("/") ? finalRedirectUri.slice(0, -1) : finalRedirectUri;
+
+    // Debug log to browser console — right click -> inspect -> console to see this!
+    console.log("FINAL REDIRECT URI BEING SENT:", cleanRedirectUri);
+
     const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(cleanRedirectUri)}&scope=${scope}&response_type=code`;
 
     window.location.href = authUrl;
