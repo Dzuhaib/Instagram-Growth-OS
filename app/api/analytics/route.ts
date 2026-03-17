@@ -56,30 +56,30 @@ Use their real recent posts for the "posts" array. If they have real posts, calc
 Respond strictly in valid JSON format with the following structure:
 {
   "summary": [
-    { "label": "Total Reach", "value": "1.2M", "trend": "+12.4%", "isUp": true, "icon": "Eye", "color": "var(--accent-pink)" },
-    { "label": "Avg Engagement", "value": "6.4%", "trend": "+1.2%", "isUp": true, "icon": "TrendingUp", "color": "var(--green)" },
-    { "label": "Net Followers", "value": "+1,420", "trend": "+450", "isUp": true, "icon": "Users", "color": "var(--accent-purple)" },
-    { "label": "AI Match Rate", "value": "75%", "trend": "-2.4%", "isUp": false, "icon": "Sparkles", "color": "var(--amber)" }
+    { "label": "Total Reach", "value": "<CALCULATED_TOTAL_REACH>", "trend": "<+X%>", "isUp": true, "icon": "Eye", "color": "var(--accent-pink)" },
+    { "label": "Avg Engagement", "value": "<CALCULATED_AVG_ENGAGEMENT_PERCENT>", "trend": "<+X%>", "isUp": true, "icon": "TrendingUp", "color": "var(--green)" },
+    { "label": "Net Followers", "value": "<CALCULATED_NET_FOLLOWERS>", "trend": "<+X>", "isUp": true, "icon": "Users", "color": "var(--accent-purple)" },
+    { "label": "AI Match Rate", "value": "<CALCULATED_PERCENT>", "trend": "<-X%>", "isUp": false, "icon": "Sparkles", "color": "var(--amber)" }
   ],
   "reachData": [
-    { "date": "Oct 1", "nonFollowers": 45000, "followers": 12000 },
+    { "date": "Oct 1", "nonFollowers": "<CALCULATED_NUMBER>", "followers": "<CALCULATED_NUMBER>" },
     ... 7 days worth
   ],
   "formatData": [
-    { "name": "Reels", "value": 65 },
-    { "name": "Carousels", "value": 25 },
-    { "name": "Images", "value": 10 }
+    { "name": "Reels", "value": "<CALCULATED_PERCENT>" },
+    { "name": "Carousels", "value": "<CALCULATED_PERCENT>" },
+    { "name": "Images", "value": "<CALCULATED_PERCENT>" }
   ],
   "engagementData": [
-    { "date": "Oct 1", "rate": 5.2 },
+    { "date": "Oct 1", "rate": "<CALCULATED_DECIMAL_NUMBER>" },
     ... 7 days worth
   ],
   "followerData": [
-    { "date": "Oct 1", "gained": 120, "lost": 15 },
+    { "date": "Oct 1", "gained": "<CALCULATED_NUMBER>", "lost": "<CALCULATED_NUMBER>" },
     ... 7 days worth
   ],
   "posts": [
-    { "id": 1, "thumbnail": "🔥", "caption": "Caption text...", "format": "Reel", "date": "10/10/2025", "reach": "45K", "engagement": "8.2%", "shares": 1200, "aiOptimized": true },
+    { "id": "<REAL_ID>", "thumbnail": "🔥", "caption": "<REAL_CAPTION>", "format": "Reel", "date": "<REAL_DATE>", "reach": "<EXTRAPOLATED_REACH>", "engagement": "<CALCULATED_ENGAGEMENT_PERCENT>", "shares": "<CALCULATED_SHARES>", "aiOptimized": true },
     ... (Use real posts if available)
   ]
 }

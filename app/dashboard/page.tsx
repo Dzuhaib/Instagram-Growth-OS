@@ -71,6 +71,9 @@ export default function DashboardPage() {
         const igRes = await fetch("/api/instagram/profile");
         if (igRes.ok) {
           const igJson = await igRes.json();
+          if (igJson.name) setName(igJson.name);
+          if (igJson.username) setHandle("@" + igJson.username);
+          
           if (igJson.followers_count !== undefined) {
             setRealFollowers(igJson.followers_count);
             
@@ -256,6 +259,11 @@ export default function DashboardPage() {
                         {slot.time}
                       </div>
                       <div className="text-[13px] font-medium text-(--text-secondary)">Format: <span className="text-text-contrast">{slot.format}</span></div>
+                      {slot.idea && (
+                        <div className="mt-1 text-[12px] text-accent-pink max-w-[200px] sm:max-w-xs xl:max-w-md line-clamp-1" title={slot.idea}>
+                          <Sparkles size={12} className="inline mr-1" /> {slot.idea}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-3">

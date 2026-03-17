@@ -57,33 +57,33 @@ Provide realistic metrics based on their actual engagement (extrapolate reach fr
 Respond strictly in valid JSON format with the following structure:
 {
   "metrics": [
-    { "label": "Est. Reach This Week", "value": 184000, "color": "var(--accent-pink)", "icon": "TrendingUp", "suffix": "" },
-    { "label": "Engagement Rate", "value": 7.2, "color": "var(--green)", "icon": "Heart", "suffix": "%" },
-    { "label": "DM Share Score", "value": 94, "color": "var(--accent-purple)", "icon": "Share2", "suffix": "/100" },
-    { "label": "Niche Consistency", "value": 88, "color": "var(--amber)", "icon": "Target", "suffix": "%" }
+    { "label": "Est. Reach This Week", "value": "<CALCULATE_BASED_ON_LIKES>", "color": "var(--accent-pink)", "icon": "TrendingUp", "suffix": "" },
+    { "label": "Engagement Rate", "value": "<CALCULATE_RATE>", "color": "var(--green)", "icon": "Heart", "suffix": "%" },
+    { "label": "DM Share Score", "value": "<CALCULATE_SCORE_OUT_OF_100>", "color": "var(--accent-purple)", "icon": "Share2", "suffix": "/100" },
+    { "label": "Niche Consistency", "value": "<SCORE_OUT_OF_100>", "color": "var(--amber)", "icon": "Target", "suffix": "%" }
   ],
   "reachData": [
-    { "day": "Mon", "reach": 12000 },
-    { "day": "Tue", "reach": 18000 },
+    { "day": "Mon", "reach": "<NUMBER_BASED_ON_REAL_DATA>" },
+    { "day": "Tue", "reach": "<NUMBER_BASED_ON_REAL_DATA>" },
     ... (7 days)
   ],
   "schedule": [
-    { "day": "Mon", "time": "6:00 PM", "format": "Reel", "score": 92 },
+    { "day": "Mon", "time": "6:00 PM", "format": "Reel", "score": "<SCORE_OUT_OF_100>", "idea": "Post a 7 second Reel about..." },
     ... (3 slots)
   ],
   "recommendations": [
     {
       "id": 1,
-      "type": "Hook Fix",
+      "type": "Content Strategy",
       "impact": "High",
-      "title": "Switch to outcome-led hooks",
-      "desc": "Your last Reel started with... but our data shows hooks starting with... perform 4x better in your niche.",
-      "action": "View Hook Templates",
+      "title": "<TITLE_BASED_ON_REAL_DEFICIENCY>",
+      "desc": "<DETAIL_BASED_ON_THEIR_REAL_POST_HISTORY>",
+      "action": "View Full Analysis",
       "color": "var(--accent-pink)"
     },
     ... (4 total)
   ],
-  "newPoints": 14
+  "newPoints": "<CALCULATED_AMOUNT_PROCESSED>"
 }
 Do not wrap JSON in markdown.`;
 
