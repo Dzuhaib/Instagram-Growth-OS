@@ -73,12 +73,39 @@ STRICT DATA RULES:
 Respond strictly in valid JSON format with the following structure:
 {
   "metrics": [
-    { "label": "Est. Reach This Week", "value": "0", "color": "var(--accent-pink)", "icon": "TrendingUp", "suffix": "" },
-    ...
+    { "label": "Est. Reach This Week", "value": 0, "color": "var(--accent-pink)", "icon": "TrendingUp", "suffix": "" },
+    { "label": "Engagement Rate", "value": 0, "color": "var(--green)", "icon": "Heart", "suffix": "%" },
+    { "label": "DM Share Score", "value": 0, "color": "var(--accent-purple)", "icon": "Share2", "suffix": "/100" },
+    { "label": "Niche Consistency", "value": 0, "color": "var(--amber)", "icon": "Target", "suffix": "%" }
   ],
-...
+  "reachData": [
+    { "day": "Mon", "reach": 0 },
+    { "day": "Tue", "reach": 0 },
+    { "day": "Wed", "reach": 0 },
+    { "day": "Thu", "reach": 0 },
+    { "day": "Fri", "reach": 0 },
+    { "day": "Sat", "reach": 0 },
+    { "day": "Sun", "reach": 0 }
+  ],
+  "schedule": [
+    { "day": "Mon", "time": "6:00 PM", "format": "Reel", "score": 0, "idea": "Post a 7 second Reel about..." },
+    { "day": "Wed", "time": "12:00 PM", "format": "Reel", "score": 0, "idea": "Post a hook about..." },
+    { "day": "Fri", "time": "8:00 PM", "format": "Carousel", "score": 0, "idea": "Post a carousel about..." }
+  ],
+  "recommendations": [
+    {
+      "id": 1,
+      "type": "Content Strategy",
+      "impact": "High",
+      "title": "Title here",
+      "desc": "Description here",
+      "action": "Action here",
+      "color": "var(--accent-pink)"
+    }
+  ],
+  "newPoints": 0
 }
-Do not wrap JSON in markdown.`;
+Do not wrap JSON in markdown. Just raw JSON.`;
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",

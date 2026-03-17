@@ -81,22 +81,22 @@ Respond strictly in valid JSON format with the following structure:
     { "label": "Views", "value": "0", "sub": "Last 30 days", "icon": "Video" }
   ],
   "timeSlots": [
-    { "time": "09:00", "scores": [30, 45, 60, 40, 50, 85, 90] },
-    { "time": "12:00", "scores": [80, 75, 60, 40, 50, 85, 90] },
-    { "time": "15:00", "scores": [50, 45, 60, 40, 50, 85, 90] },
-    { "time": "18:00", "scores": [90, 85, 70, 60, 50, 85, 90] },
-    { "time": "20:00", "scores": [30, 45, 60, 40, 50, 85, 90] }
+    { "time": "09:00", "scores": [0, 0, 0, 0, 0, 0, 0] },
+    { "time": "12:00", "scores": [0, 0, 0, 0, 0, 0, 0] },
+    { "time": "15:00", "scores": [0, 0, 0, 0, 0, 0, 0] },
+    { "time": "18:00", "scores": [0, 0, 0, 0, 0, 0, 0] },
+    { "time": "20:00", "scores": [0, 0, 0, 0, 0, 0, 0] }
   ],
-  "nextWindow": "Today at 18:00",
-  "nextReason": "Description of why today at this time is good. Include a specific content idea here they should post (e.g., 'Post a 7-second reel about XYZ').",
+  "nextWindow": "Not enough data",
+  "nextReason": "Description here",
   "nuances": [
-    { "title": "Hooks", "text": "Start with XYZ pattern..." },
-    { "title": "Timing", "text": "Post 10 minutes before peak..." }
+    { "title": "Hooks", "text": "Content here" },
+    { "title": "Timing", "text": "Content here" }
   ]
 }
 
 The scores should be 7 numbers (Mon-Sun) between 0-100.
-Do not wrap JSON in markdown.`;
+Do not wrap JSON in markdown. Just raw JSON.`;
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",

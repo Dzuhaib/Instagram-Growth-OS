@@ -77,15 +77,47 @@ STRICT ACCURACY RULES:
 3. ABSOLUTELY FORBIDDEN: Do not output "150" for new followers unless the data justifies it. Do not output "1.2M" or "184K". Do not output "Scanning..." or "Active" for any numeric field.
 4. The output must be 100% proportionally accurate to a ${followerCount} follower account with ${recentPosts.length} posts.
 
-Respond in JSON:
+Respond in valid JSON with THIS EXACT STRUCTURE:
 {
   "summary": [
-    { "label": "Total Reach", "value": "${recentPosts.length === 0 ? "0" : "<CALC>"}", ... },
-    { "label": "Avg Engagement", "value": "${recentPosts.length === 0 ? "0.00%" : "<CALC>%"}", ... },
-    { "label": "Net Followers", "value": "0", ... },
-    ...
+    { "label": "Total Reach", "value": "0", "trend": "+0%", "isUp": true, "icon": "Eye", "color": "var(--accent-pink)" },
+    { "label": "Avg Engagement", "value": "0.00%", "trend": "+0%", "isUp": true, "icon": "TrendingUp", "color": "var(--green)" },
+    { "label": "Net Followers", "value": "0", "trend": "+0", "isUp": true, "icon": "Users", "color": "var(--accent-purple)" },
+    { "label": "AI Match Rate", "value": "0%", "trend": "0%", "isUp": false, "icon": "Sparkles", "color": "var(--amber)" }
   ],
-...
+  "reachData": [
+    { "date": "Oct 1", "nonFollowers": 0, "followers": 0 },
+    { "date": "Oct 2", "nonFollowers": 0, "followers": 0 },
+    { "date": "Oct 3", "nonFollowers": 0, "followers": 0 },
+    { "date": "Oct 4", "nonFollowers": 0, "followers": 0 },
+    { "date": "Oct 5", "nonFollowers": 0, "followers": 0 },
+    { "date": "Oct 6", "nonFollowers": 0, "followers": 0 },
+    { "date": "Oct 7", "nonFollowers": 0, "followers": 0 }
+  ],
+  "formatData": [
+    { "name": "Reels", "value": 0 },
+    { "name": "Carousels", "value": 0 },
+    { "name": "Images", "value": 0 }
+  ],
+  "engagementData": [
+    { "date": "Oct 1", "rate": 0 },
+    { "date": "Oct 2", "rate": 0 },
+    { "date": "Oct 3", "rate": 0 },
+    { "date": "Oct 4", "rate": 0 },
+    { "date": "Oct 5", "rate": 0 },
+    { "date": "Oct 6", "rate": 0 },
+    { "date": "Oct 7", "rate": 0 }
+  ],
+  "followerData": [
+    { "date": "Oct 1", "gained": 0, "lost": 0 },
+    { "date": "Oct 2", "gained": 0, "lost": 0 },
+    { "date": "Oct 3", "gained": 0, "lost": 0 },
+    { "date": "Oct 4", "gained": 0, "lost": 0 },
+    { "date": "Oct 5", "gained": 0, "lost": 0 },
+    { "date": "Oct 6", "gained": 0, "lost": 0 },
+    { "date": "Oct 7", "gained": 0, "lost": 0 }
+  ],
+  "posts": []
 }
 Do not wrap JSON in markdown.`;
 
