@@ -43,6 +43,8 @@ export default function NicheTrackerPage() {
   const [data, setData] = useState<NicheData | null>(null);
   const [loading, setLoading] = useState(true);
   const [niche, setNiche] = useState("");
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editNiche, setEditNiche] = useState("");
 
   const fetchNicheData = async () => {
     setLoading(true);
@@ -66,6 +68,16 @@ export default function NicheTrackerPage() {
   useEffect(() => {
     fetchNicheData();
   }, []);
+
+  const handleSaveNiche = () => {
+    if (!editNiche.trim()) return;
+    localStorage.setItem("growth_os_niche", editNiche.trim());
+    setNiche(editNiche.trim());
+    setShowEditModal(false);
+    fetchNicheData();
+  };
+
+  const currentNiche = niche || "General";
 
   return (
     <div className="pb-12 max-w-6xl mx-auto">
@@ -234,8 +246,8 @@ export default function NicheTrackerPage() {
               <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-bg-raised border border-border-strong shadow-inner">
                 <Target size={28} className="text-accent-purple" />
               </div>
-              <h3 className="font-Heading text-[18px] font-bold text-text-contrast mb-1 whitespace-nowrap overflow-hidden text-ellipsis px-2">
-                {niche || "General"}
+              <h3 className="font-Heading text-[18px] font-bold text-text-contrast mb-1 whitespace-nowrap overflow-hidden text-ellipsis px-2" title={currentNiche}>
+                {currentNiche}
               </h3>
               <p className="text-[13px] text-text-secondary uppercase tracking-widest font-bold">Primary Niche</p>
             </div>
@@ -273,7 +285,13 @@ export default function NicheTrackerPage() {
                   </ul>
                </div>
 
-               <button className="btn-secondary w-full justify-center h-10 mt-8 shadow-sm border-border-strong bg-bg-raised hover:bg-bg-overlay hover:text-text-contrast">
+               <button 
+                 className="btn-secondary w-full justify-center h-10 mt-8 shadow-sm border-border-strong bg-bg-raised hover:bg-bg-overlay hover:text-text-contrast"
+                 onClick={() => {
+                    setEditNiche(currentNiche);
+                    setShowEditModal(true);
+                 }}
+               >
                  Edit Parameters
                </button>
             </div>
@@ -281,6 +299,47 @@ export default function NicheTrackerPage() {
         </div>
 
       </div>
+
+      {/* Edit Niche Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg-base/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="surface-glass w-full max-w-md p-6 border-border-strong shadow-2xl animate-in zoom-in-95 duration-200 rounded-2xl">
+            <h2 className="mb-2 font-Heading text-[20px] font-bold text-text-contrast tracking-tight flex items-center gap-2">
+              <Sparkles size={18} className="text-accent-pink" /> Edit Tracked Niche
+            </h2>
+            <p className="mb-6 text-[14px] leading-relaxed text-text-secondary">
+              Update your primary niche to get AI insights tailored to a specific audience or topic.
+            </p>
+            <div className="mb-6">
+              <label className="mb-2 block text-[13px] font-semibold text-text-secondary">Target Niche</label>
+              <input 
+                autoFocus
+                className="input-field" 
+                value={editNiche} 
+                onChange={(e) => setEditNiche(e.target.value)}
+                placeholder="e.g. Health & Fitness"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleSaveNiche();
+                }}
+              />
+            </div>
+            <div className="flex flex-col-reverse justify-end gap-3 sm:flex-row">
+              <button
+                className="btn-secondary h-10 w-full sm:w-auto"
+                onClick={() => setShowEditModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn-accent h-10 px-6 w-full sm:w-auto"
+                onClick={handleSaveNiche}
+              >
+                Save & Analyze
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
