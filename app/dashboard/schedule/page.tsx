@@ -31,9 +31,20 @@ export default function SchedulePage() {
   const [data, setData] = useState<ScheduleData | null>(null);
   const [loading, setLoading] = useState(true);
   const [niche, setNiche] = useState("");
+  const [realFollowers, setRealFollowers] = useState<number | null>(null);
 
   useEffect(() => {
     setNiche(localStorage.getItem("growth_os_niche") || "General");
+    
+    // Fetch live follower count to inject into AI stats
+    fetch("/api/instagram/profile")
+      .then(res => res.json())
+      .then(igJson => {
+        if (igJson.followers_count !== undefined) {
+          setRealFollowers(igJson.followers_count);
+        }
+      })
+      .catch(err => console.error("Failed to fetch IG profile for schedule:", err));
   }, []);
 
   const fetchSchedule = async () => {
@@ -138,15 +149,32 @@ export default function SchedulePage() {
         ))}
         {!loading && data?.stats?.map((stat, i) => {
           const Icon = getIcon(stat.icon);
+          
+          // Inject real data if it's the followers stat! (The AI usually generates random dummy numbers for this)
+          let displayValue = stat.value;
+          let displayLabel = stat.label;
+          let displaySub = stat.sub;
+          
+          if (stat.label.toLowerCase().includes("follower")) {
+            displayLabel = "Current Followers";
+            displaySub = "Live Instagram Data";
+            displayValue = realFollowers !== null ? realFollowers.toLocaleString() : "Syncing...";
+          }
+
           return (
             <div key={i} className="surface-glass p-6 flex items-start gap-4">
               <div className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl bg-bg-raised border border-border-subtle shadow-inner">
                 <Icon size={20} className="text-accent-pink" />
               </div>
               <div>
-                <div className="mb-1 font-['Outfit'] text-[22px] font-bold tracking-tight text-text-contrast leading-none">{stat.value}</div>
-                <div className="mb-1 text-[13px] font-semibold text-(--text-secondary)">{stat.label}</div>
-                <div className="text-[12px] text-(--text-tertiary)">{stat.sub}</div>
+                <div className="mb-1 font-['Outfit'] text-[22px] font-bold tracking-tight text-text-contrast leading-none flex items-center gap-1.5">
+                  {displayValue} 
+                  {realFollowers !== null && stat.label.toLowerCase().includes("follower") && (
+                     <CheckCircle2 size={12} className="text-green" />
+                  )}
+                </div>
+                <div className="mb-1 text-[13px] font-semibold text-(--text-secondary)">{displayLabel}</div>
+                <div className="text-[12px] text-(--text-tertiary)">{displaySub}</div>
               </div>
             </div>
           );

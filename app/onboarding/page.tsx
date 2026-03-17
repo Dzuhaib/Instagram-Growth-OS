@@ -93,9 +93,9 @@ export default function OnboardingPage() {
     localStorage.setItem("growth_os_niche", niche);
     localStorage.setItem("growth_os_goal", goal);
 
-    // auth_type=rerequest forces Instagram to always show permissions screen,
-    // fixing the silent redirect on mobile where users are already logged in.
-    const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code&auth_type=rerequest`;
+    // Using www.instagram.com instead of api.instagram.com to fix the mobile deep-linking bug
+    // where the native Instagram app intercepts the URL and fails to show the OAuth permissions screen.
+    const authUrl = `https://www.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code&auth_type=rerequest`;
 
     window.location.href = authUrl;
   };
