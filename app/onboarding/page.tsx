@@ -61,22 +61,9 @@ export default function OnboardingPage() {
       return;
     }
 
-    // Auto-detect the current domain to ensure the redirect_uri always matches the environment
-    const currentDomain = typeof window !== "undefined" ? window.location.origin : "";
-    let finalRedirectUri = redirectUri;
-
-    // If we are on Vercel but the env says localhost, auto-fix it
-    if (currentDomain.includes("vercel.app") && redirectUri.includes("localhost")) {
-      finalRedirectUri = `${currentDomain}/api/auth/instagram/callback`;
-      console.log("Auto-switched to Vercel Redirect URI:", finalRedirectUri);
-    }
-
-    const cleanRedirectUri = finalRedirectUri.endsWith("/") ? finalRedirectUri.slice(0, -1) : finalRedirectUri;
-
-    // Debug log to browser console — right click -> inspect -> console to see this!
-    console.log("FINAL REDIRECT URI BEING SENT:", cleanRedirectUri);
-
-    const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(cleanRedirectUri)}&scope=${scope}&response_type=code`;
+    // Use the static redirectUri from env exactly as it is (assuming it's correctly set in Vercel/Local)
+    // We encode it because it's a parameter in a query string.
+    const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code`;
 
     window.location.href = authUrl;
   };
@@ -260,7 +247,7 @@ export default function OnboardingPage() {
                 <ArrowLeft size={16} />
               </button>
 
-              <div className="mx-auto mb-6 flex h-[80px] w-[80px] items-center justify-center rounded-2xl bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#F56040] shadow-[0_0_30px_rgba(253,29,29,0.3)]">
+              <div className="mx-auto mb-6 flex h-[80px] w-[80px] items-center justify-center rounded-2xl bg-linear-to-br from-[#833AB4] via-[#FD1D1D] to-accent-orange shadow-[0_0_30px_rgba(253,29,29,0.3)]">
                 <Instagram size={40} color="white" />
               </div>
 

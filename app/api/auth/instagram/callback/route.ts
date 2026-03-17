@@ -10,13 +10,7 @@ export async function GET(req: Request) {
 
   const clientId = process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_ID;
   const clientSecret = process.env.INSTAGRAM_CLIENT_SECRET;
-  
-  // Construct redirectUri dynamically from the current request to ensure a 100% match
-  const protocol = req.headers.get("x-forwarded-proto") || "http";
-  const host = req.headers.get("host");
-  const redirectUri = `${protocol}://${host}/api/auth/instagram/callback`;
-  
-  console.log("Constructed Backend Redirect URI:", redirectUri);
+  const redirectUri = process.env.NEXT_PUBLIC_INSTAGRAM_REDIRECT_URI;
 
   if (!clientId || !clientSecret || !redirectUri) {
     console.error("Missing Instagram environment variables.");
