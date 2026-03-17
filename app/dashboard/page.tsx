@@ -11,6 +11,7 @@ import {
   Calendar,
   Zap,
   Sparkles,
+  Users,
 } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer, Tooltip } from "recharts";
 import AnimatedCounter from "@/components/AnimatedCounter";
@@ -43,6 +44,8 @@ export default function DashboardPage() {
   const [hoveredRec, setHoveredRec] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [handle, setHandle] = useState("");
+  const [realFollowers, setRealFollowers] = useState<number | null>(null);
+  const [followerTrend, setFollowerTrend] = useState<number | null>(null);
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -62,6 +65,39 @@ export default function DashboardPage() {
       });
       const json = await response.json();
       setData(json);
+      
+      // Fetch Real Instagram Data
+      try {
+        const igRes = await fetch("/api/instagram/profile");
+        if (igRes.ok) {
+          const igJson = await igRes.json();
+          if (igJson.followers_count !== undefined) {
+            setRealFollowers(igJson.followers_count);
+            
+            // Track history
+            const history = JSON.parse(localStorage.getItem("growth_os_follower_history") || "[]");
+            const today = new Date().toISOString().split("T")[0];
+            
+            // Calculate trend if we have history
+            if (history.length > 0) {
+              const previousFollowers = history[history.length - 1].followers;
+              setFollowerTrend(igJson.followers_count - previousFollowers);
+            }
+            
+            const existingIndex = history.findIndex((h: any) => h.date === today);
+            if (existingIndex === -1) {
+              history.push({ date: today, followers: igJson.followers_count });
+              localStorage.setItem("growth_os_follower_history", JSON.stringify(history));
+            } else {
+              history[existingIndex].followers = igJson.followers_count;
+              localStorage.setItem("growth_os_follower_history", JSON.stringify(history));
+            }
+          }
+        }
+      } catch (igErr) {
+        console.error("Failed to fetch IG profile:", igErr);
+      }
+
     } catch (err) {
       console.error(err);
     } finally {
@@ -110,10 +146,30 @@ export default function DashboardPage() {
       </div>
 
       {/* Metrics Row */}
-      <div className="mb-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {loading && [1, 2, 3, 4].map((i) => (
+      <div className="mb-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+        {loading && [1, 2, 3, 4, 5].map((i) => (
           <div key={i} className="surface-glass p-6 h-[100px] animate-pulse bg-bg-raised" />
         ))}
+        {!loading && realFollowers !== null && (
+          <div className="surface-glass p-6 transition-all border-accent-pink/30 bg-accent-pink/5 hover:border-accent-pink">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-accent-pink/20 bg-accent-pink/10">
+                <Users size={18} className="text-accent-pink" />
+              </div>
+            </div>
+            <div className="mb-1 flex items-baseline gap-1 font-['Outfit'] text-3xl font-bold text-text-contrast tracking-tight">
+              <AnimatedCounter value={realFollowers} />
+            </div>
+            <div className="flex items-center justify-between mt-1">
+              <div className="text-[13px] font-medium text-(--text-tertiary)">Current Followers</div>
+              {followerTrend !== null && followerTrend !== 0 && (
+                <div className={`text-[11px] font-bold ${followerTrend > 0 ? "text-green" : "text-red"} flex items-center`}>
+                  {followerTrend > 0 ? "+" : ""}{followerTrend} today
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         {!loading && data?.metrics?.map((metric: any) => {
           const Icon = getMetricIcon(metric.icon);
           return (

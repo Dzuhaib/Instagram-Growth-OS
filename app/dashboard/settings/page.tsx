@@ -29,6 +29,8 @@ export default function SettingsPage() {
   }, []);
 
   const handleSave = () => {
+    localStorage.setItem("growth_os_name", name);
+    localStorage.setItem("growth_os_handle", handle);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -102,15 +104,15 @@ export default function SettingsPage() {
                 <div className="grid gap-6 sm:grid-cols-2 max-w-2xl">
                   <div className="sm:col-span-2">
                     <label className="mb-2 block text-[13px] font-semibold text-text-secondary">Full Name</label>
-                    <input className="input-field" defaultValue={name} />
+                    <input className="input-field" value={name} onChange={(e) => setName(e.target.value)} />
                   </div>
                   <div className="sm:col-span-2">
                     <label className="mb-2 block text-[13px] font-semibold text-text-secondary">Instagram Handle</label>
-                    <input className="input-field" defaultValue={handle} />
+                    <input className="input-field" value={handle} onChange={(e) => setHandle(e.target.value)} />
                   </div>
                   <div className="sm:col-span-2">
                     <label className="mb-2 block text-[13px] font-semibold text-text-secondary">Email Address</label>
-                    <input className="input-field" defaultValue={`${name.toLowerCase().replace(/\s/g, '')}@example.com`} type="email" />
+                    <input className="input-field" value={`${name.toLowerCase().replace(/\s/g, '')}@example.com`} type="email" disabled />
                   </div>
                 </div>
 

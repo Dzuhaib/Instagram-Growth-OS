@@ -39,7 +39,14 @@ const AGENCY_ITEMS = [
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
-  const [notifications] = useState(3);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: "Audience Sync Complete", desc: "We've imported your latest follower data.", time: "2 min ago", unread: true },
+    { id: 2, title: "Optimal Post Time", desc: "Your audience is Highly Active in 2 hours.", time: "1 hour ago", unread: true },
+    { id: 3, title: "New Feature", desc: "Hook Analyser is now live!", time: "1 day ago", unread: true },
+  ]);
+
+  const unreadCount = notifications.filter(n => n.unread).length;
 
   useEffect(() => {
     const handleResize = () => {
@@ -193,12 +200,47 @@ export default function DashboardShell({ children }: { children: React.ReactNode
               Pro Trial (5 days left)
             </div>
 
-            <button className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border-subtle bg-bg-surface text-text-secondary transition-all hover:bg-bg-overlay hover:border-border-strong hover:text-text-contrast shadow-sm">
-              <Bell size={18} strokeWidth={2} />
-              {notifications > 0 && (
-                 <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-accent-pink shadow-[0_0_10px_var(--color-accent-pink)] border-2 border-bg-surface"></span>
+            <div className="relative">
+              <button 
+                className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border-subtle bg-bg-surface text-text-secondary transition-all hover:bg-bg-overlay hover:border-border-strong hover:text-text-contrast shadow-sm"
+                onClick={() => setShowNotifications(!showNotifications)}
+              >
+                <Bell size={18} strokeWidth={2} />
+                {unreadCount > 0 && (
+                   <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-accent-pink shadow-[0_0_10px_var(--color-accent-pink)] border-2 border-bg-surface"></span>
+                )}
+              </button>
+
+              {/* Notifications Dropdown */}
+              {showNotifications && (
+                <div className="absolute right-0 mt-2 w-80 rounded-xl border border-border-strong bg-bg-raised p-4 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2">
+                  <div className="mb-3 flex items-center justify-between border-b border-border-subtle pb-2">
+                    <h3 className="font-['Outfit'] text-[15px] font-bold text-text-contrast">Notifications</h3>
+                    <button 
+                      className="text-[12px] text-accent-pink hover:underline"
+                      onClick={() => setNotifications(n => n.map(item => ({ ...item, unread: false })))}
+                    >
+                      Mark all as read
+                    </button>
+                  </div>
+                  <div className="flex max-h-80 flex-col gap-2 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="py-4 text-center text-[13px] text-text-tertiary">No new notifications</div>
+                    ) : (
+                      notifications.map(n => (
+                        <div key={n.id} className={`flex flex-col rounded-lg p-3 transition-colors ${n.unread ? "bg-bg-overlay border border-border-subtle" : "hover:bg-bg-overlay"}`}>
+                          <div className="mb-1 flex items-center justify-between">
+                            <span className="font-semibold text-text-contrast text-[13px]">{n.title}</span>
+                            <span className="text-[11px] text-text-tertiary">{n.time}</span>
+                          </div>
+                          <span className="text-[12px] text-text-secondary">{n.desc}</span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
               )}
-            </button>
+            </div>
 
             <button className="flex h-10 w-10 items-center justify-center rounded-xl bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] font-heading text-[15px] font-bold text-white border border-white/20 hover:scale-105 transition-transform shadow-[0_4px_10px_rgba(225,48,108,0.3)]">
               J

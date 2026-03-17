@@ -93,9 +93,9 @@ export default function OnboardingPage() {
     localStorage.setItem("growth_os_niche", niche);
     localStorage.setItem("growth_os_goal", goal);
 
-    // Use the static redirectUri from env exactly as it is (assuming it's correctly set in Vercel/Local)
-    // We encode it because it's a parameter in a query string.
-    const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code`;
+    // auth_type=rerequest forces Instagram to always show permissions screen,
+    // fixing the silent redirect on mobile where users are already logged in.
+    const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code&auth_type=rerequest`;
 
     window.location.href = authUrl;
   };

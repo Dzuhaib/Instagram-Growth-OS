@@ -68,6 +68,8 @@ export default function AnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({ key: "date", direction: "desc" });
+  const [realFollowers, setRealFollowers] = useState<number | null>(null);
+  const [realMediaCount, setRealMediaCount] = useState<number | null>(null);
 
   const fetchAnalytics = async () => {
     setLoading(true);
@@ -80,6 +82,20 @@ export default function AnalyticsPage() {
       });
       const json = await response.json();
       setData(json);
+
+      // Fetch Real Instagram Data for Analytics
+      try {
+        const igRes = await fetch("/api/instagram/profile");
+        if (igRes.ok) {
+          const igJson = await igRes.json();
+          if (igJson.followers_count !== undefined) {
+            setRealFollowers(igJson.followers_count);
+            setRealMediaCount(igJson.media_count);
+          }
+        }
+      } catch (igErr) {
+        console.error("Failed to fetch IG profile:", igErr);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -158,10 +174,24 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="mb-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {loading && [1, 2, 3, 4].map((i) => (
+      <div className="mb-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+        {loading && [1, 2, 3, 4, 5].map((i) => (
           <div key={i} className="surface-glass p-6 h-[100px] animate-pulse bg-bg-raised" />
         ))}
+        {!loading && realFollowers !== null && (
+          <div className="surface-glass p-6 transition-all border-accent-pink/30 bg-accent-pink/5">
+              <div className="mb-4 flex items-center justify-between">
+                <span className="text-[13px] font-medium text-(--text-secondary)">Total Followers</span>
+                <Users size={16} className="text-accent-pink" />
+              </div>
+              <div className="mb-2 font-['Outfit'] text-[32px] font-bold text-text-contrast tracking-tight leading-none">
+                {realFollowers.toLocaleString()}
+              </div>
+              <div className="flex items-center gap-1 text-[12px] font-semibold text-green">
+                <Sparkles size={14} /> Real Instagram Data
+              </div>
+          </div>
+        )}
         {!loading && data?.summary?.map((stat) => {
           const Icon = getStatIcon(stat.icon);
           return (
