@@ -20,6 +20,17 @@ export default function ContentScorerPage() {
 
   useEffect(() => {
     setNiche(localStorage.getItem("growth_os_niche") || "General");
+    
+    // Check if we came from the Competitor Gap page with a specific topic to score
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const topic = params.get("topic");
+      if (topic) {
+        setCaption(`[Topic: ${topic}]\n\nWrite your drafted caption here...`);
+        // Remove from URL so it doesn't persist on refresh
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
   }, []);
 
   const handleScore = async () => {

@@ -37,8 +37,8 @@ Respond strictly in valid JSON format with the following structure:
     "id": 1,
     "topic": "Topic Name",
     "opportunity": "High" or "Medium" or "Low",
-    "competitorReach": "e.g. 450K avg / post",
-    "yourReach": "e.g. N/A (0 posts)",
+    "competitorVolume": "e.g. 3 posts/week",
+    "targetVolume": "e.g. 5 posts/week to beat them",
     "why": "Why this matters...",
     "recommendations": [
       "Recommendation 1",

@@ -13,6 +13,7 @@ import {
   BarChart3,
   X,
 } from "lucide-react";
+import Link from "next/link";
 
 export default function CompetitorGapPage() {
   const [competitors, setCompetitors] = useState<string[]>([]);
@@ -22,8 +23,8 @@ export default function CompetitorGapPage() {
     id: number;
     topic: string;
     opportunity: string;
-    competitorReach: string;
-    yourReach: string;
+    competitorVolume: string;
+    targetVolume: string;
     why: string;
     recommendations: string[];
   }[] | null>(null);
@@ -217,15 +218,15 @@ export default function CompetitorGapPage() {
                     </div>
                   </div>
 
-                  {/* Reach Comparison */}
+                  {/* Post Volume Comparison */}
                   <div className="grid grid-cols-2 divide-x divide-border-subtle border-b border-border-subtle bg-bg-surface">
                     <div className="p-5 text-center transition-colors hover:bg-bg-overlay">
                       <div className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-text-tertiary">Competitor Avg</div>
-                      <div className="font-Heading text-[22px] font-bold text-accent-purple">{gap.competitorReach}</div>
+                      <div className="font-Heading text-[22px] font-bold text-accent-purple">{gap.competitorVolume}</div>
                     </div>
                     <div className="p-5 text-center transition-colors hover:bg-bg-overlay">
-                      <div className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-text-tertiary">Your Avg</div>
-                      <div className="font-Heading text-[22px] font-bold text-red">{gap.yourReach}</div>
+                      <div className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-text-tertiary">Strategic Target</div>
+                      <div className="font-Heading text-[22px] font-bold text-green">{gap.targetVolume}</div>
                     </div>
                   </div>
 
@@ -256,9 +257,9 @@ export default function CompetitorGapPage() {
                       </div>
                     </div>
                     
-                    <button className="mt-8 flex w-full items-center justify-center gap-2 rounded-lg border border-border-strong bg-bg-raised h-[44px] text-[13px] font-semibold text-text-contrast transition-all hover:bg-bg-overlay hover:border-accent-pink/30 hover:text-accent-pink">
+                    <Link href={`/dashboard/content-scorer?topic=${encodeURIComponent(gap.topic)}`} className="mt-8 flex w-full items-center justify-center gap-2 rounded-lg border border-border-strong bg-bg-raised h-[44px] text-[13px] font-semibold text-text-contrast transition-all hover:bg-bg-overlay hover:border-accent-pink/30 hover:text-accent-pink">
                       Score this content concept <ArrowRight size={14} />
-                    </button>
+                    </Link>
                   </div>
                 </div>
               ))}
