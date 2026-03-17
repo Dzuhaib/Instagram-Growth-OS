@@ -22,9 +22,19 @@ export async function POST(req: Request) {
 
     let postsSummary = "No real posts found or Instagram account not connected.";
     let recentPosts = [];
+    let followerCount = 0;
 
     if (token) {
       try {
+        // Fetch Profile for follower count scale
+        const profileRes = await fetch(
+          `https://graph.instagram.com/v25.0/me?fields=followers_count&access_token=${token}`
+        );
+        if (profileRes.ok) {
+          const profileData = await profileRes.json();
+          followerCount = profileData.followers_count || 0;
+        }
+
         const url = `https://graph.instagram.com/v25.0/me/media?fields=id,caption,media_type,comments_count,like_count,timestamp,thumbnail_url,media_url,permalink&limit=15&access_token=${token}`;
         const igRes = await fetch(url);
         if (igRes.ok) {
@@ -46,42 +56,36 @@ export async function POST(req: Request) {
       }
     }
 
-    const prompt = `You are an AI Instagram Analyst. 
-Generate realistic analytics data for a user in the "${niche || "general"}" niche over the last ${timeRange}.
-Here is their real recent content data:
----
-${postsSummary}
----
-Use their real recent posts for the "posts" array. If they have real posts, calculate realistic reach, engagement rates, and shares based on their actual likes/comments. Randomly flag a few of their best performing real posts as "aiOptimized": true and others as false. If they have no real posts, generate 5 realistic dummy ones.
-Respond strictly in valid JSON format with the following structure:
+    let realAccountContext = "";
+    if (token) {
+      realAccountContext = `This user has ${followerCount} followers and ${recentPosts.length} posts. 
+      ${recentPosts.length === 0 ? "Since they have 0 posts, ALL REACH AND ENGAGEMENT FIGURES IN THE RESPONSE MUST BE 0." : "Calculate real proportional metrics."}`;
+    }
+
+    const prompt = `You are an AI Instagram Analyst. 95% Accuracy and REALISM Required.
+Generate analytics data for a user in the "${niche || "general"}" niche over the last ${timeRange}.
+
+SCALE INFO:
+- Total Followers: ${followerCount}
+- Account Size: This is a tiny account with ${followerCount} followers. ${followerCount < 100 ? "Use extremely small numbers." : "Use realistic proportional numbers."}
+- Real Posts: ${recentPosts.length} posts found.
+
+${realAccountContext}
+STRICT ACCURACY RULES:
+1. If Real Posts = 0: "Total Reach" must be "0". "Avg Engagement" must be "0.00%". "Net Followers" must be "0" or "+1".
+2. If Real Posts = 0: All "reachData" days must be 0. All "formatData" must be 0%. All "engagementData" must be 0.
+3. ABSOLUTELY FORBIDDEN: Do not output "150" for new followers unless the data justifies it. Do not output "1.2M" or "184K". Do not output "Scanning..." or "Active" for any numeric field.
+4. The output must be 100% proportionally accurate to a ${followerCount} follower account with ${recentPosts.length} posts.
+
+Respond in JSON:
 {
   "summary": [
-    { "label": "Total Reach", "value": "<CALCULATED_TOTAL_REACH>", "trend": "<+X%>", "isUp": true, "icon": "Eye", "color": "var(--accent-pink)" },
-    { "label": "Avg Engagement", "value": "<CALCULATED_AVG_ENGAGEMENT_PERCENT>", "trend": "<+X%>", "isUp": true, "icon": "TrendingUp", "color": "var(--green)" },
-    { "label": "Net Followers", "value": "<CALCULATED_NET_FOLLOWERS>", "trend": "<+X>", "isUp": true, "icon": "Users", "color": "var(--accent-purple)" },
-    { "label": "AI Match Rate", "value": "<CALCULATED_PERCENT>", "trend": "<-X%>", "isUp": false, "icon": "Sparkles", "color": "var(--amber)" }
+    { "label": "Total Reach", "value": "${recentPosts.length === 0 ? "0" : "<CALC>"}", ... },
+    { "label": "Avg Engagement", "value": "${recentPosts.length === 0 ? "0.00%" : "<CALC>%"}", ... },
+    { "label": "Net Followers", "value": "0", ... },
+    ...
   ],
-  "reachData": [
-    { "date": "Oct 1", "nonFollowers": "<CALCULATED_NUMBER>", "followers": "<CALCULATED_NUMBER>" },
-    ... 7 days worth
-  ],
-  "formatData": [
-    { "name": "Reels", "value": "<CALCULATED_PERCENT>" },
-    { "name": "Carousels", "value": "<CALCULATED_PERCENT>" },
-    { "name": "Images", "value": "<CALCULATED_PERCENT>" }
-  ],
-  "engagementData": [
-    { "date": "Oct 1", "rate": "<CALCULATED_DECIMAL_NUMBER>" },
-    ... 7 days worth
-  ],
-  "followerData": [
-    { "date": "Oct 1", "gained": "<CALCULATED_NUMBER>", "lost": "<CALCULATED_NUMBER>" },
-    ... 7 days worth
-  ],
-  "posts": [
-    { "id": "<REAL_ID>", "thumbnail": "🔥", "caption": "<REAL_CAPTION>", "format": "Reel", "date": "<REAL_DATE>", "reach": "<EXTRAPOLATED_REACH>", "engagement": "<CALCULATED_ENGAGEMENT_PERCENT>", "shares": "<CALCULATED_SHARES>", "aiOptimized": true },
-    ... (Use real posts if available)
-  ]
+...
 }
 Do not wrap JSON in markdown.`;
 

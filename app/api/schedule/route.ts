@@ -22,8 +22,22 @@ export async function POST(req: Request) {
 
     let postsSummary = "No real posts found or Instagram account not connected.";
     let recentPosts = [];
+    let followerCount = 0;
 
     if (token) {
+      try {
+        // Fetch Profile for follower count scale
+        const profileRes = await fetch(
+          `https://graph.instagram.com/v25.0/me?fields=followers_count&access_token=${token}`
+        );
+        if (profileRes.ok) {
+          const profileData = await profileRes.json();
+          followerCount = profileData.followers_count || 0;
+        }
+      } catch (err) {
+        console.error("IG profile fetch error:", err);
+      }
+
       try {
         const url = `https://graph.instagram.com/v25.0/me/media?fields=id,caption,media_type,comments_count,like_count,timestamp,thumbnail_url,media_url,permalink&limit=15&access_token=${token}`;
         const igRes = await fetch(url);
@@ -48,17 +62,23 @@ export async function POST(req: Request) {
 Niche: ${niche || "General"}
 Goal: ${goal || "Growth"}
 Format: ${format || "Reel"}
-Here is the user's recent content data:
----
-${postsSummary}
----
-Generate a personalized posting schedule matrix. Consider their past content performance if available to determine the best times and content ideas. Include a specific content idea for the "nextWindow" that they should post.
+
+CRITICAL CONTEXT:
+- Total Followers: ${followerCount}
+- Recent Posts Count: ${recentPosts.length}
+- Real Post Data: ${recentPosts.length > 0 ? postsSummary : "USER HAS NOT POSTED RECENTLY."}
+
+RULES:
+1. "stats" MUST reflect reality. If 0 posts, "Views" must be 0. "New Followers" must be 0 or +1, NOT 150.
+2. If 0 posts, "Engagement Rate" must be 0.0%.
+3. Generate a personalized posting schedule matrix.
+
 Respond strictly in valid JSON format with the following structure:
 {
   "stats": [
-    { "label": "Engagement Rate", "value": "5.2%", "sub": "Average for the week", "icon": "Sparkles" },
-    { "label": "New Followers", "value": "150", "sub": "Last 7 days", "icon": "Users" },
-    { "label": "Views", "value": "1,200", "sub": "Last 30 days", "icon": "Video" }
+    { "label": "Engagement Rate", "value": "0.0%", "sub": "Average for the week", "icon": "Sparkles" },
+    { "label": "New Followers", "value": "0", "sub": "Last 7 days", "icon": "Users" },
+    { "label": "Views", "value": "0", "sub": "Last 30 days", "icon": "Video" }
   ],
   "timeSlots": [
     { "time": "09:00", "scores": [30, 45, 60, 40, 50, 85, 90] },
