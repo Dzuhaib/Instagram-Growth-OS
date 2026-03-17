@@ -13,39 +13,40 @@ export async function GET(req: Request) {
   const redirectUri = process.env.NEXT_PUBLIC_INSTAGRAM_REDIRECT_URI;
 
   try {
-    // 1. Exchange code for Facebook User Access Token
-    const tokenUrl = `https://graph.facebook.com/v19.0/oauth/access_token?client_id=${clientId}&client_secret=${clientSecret}&redirect_uri=${encodeURIComponent(redirectUri || "")}&code=${code}`;
-    const tokenResponse = await fetch(tokenUrl);
+    // 1. Exchange code for Instagram Access Token
+    const formData = new FormData();
+    formData.append("client_id", clientId || "");
+    formData.append("client_secret", clientSecret || "");
+    formData.append("grant_type", "authorization_code");
+    formData.append("redirect_uri", redirectUri || "");
+    formData.append("code", code);
+
+    const tokenResponse = await fetch("https://api.instagram.com/oauth/access_token", {
+      method: "POST",
+      body: formData,
+    });
+
     const tokenData = await tokenResponse.json();
 
     if (tokenData.error) {
-      console.error("Facebook Token Error:", tokenData.error);
+      console.error("Instagram Token Error:", tokenData.error);
       return NextResponse.redirect(new URL("/onboarding?error=token_exchange_failed", req.url));
     }
 
     const accessToken = tokenData.access_token;
 
-    // 2. Fetch User's Pages to find the Linked Instagram Business Account
-    const pagesResponse = await fetch(
-      `https://graph.facebook.com/v19.0/me/accounts?fields=instagram_business_account{id,username,name,profile_picture_url}&access_token=${accessToken}`
+    // 2. Fetch Instagram Profile (from Graph API)
+    const profileResponse = await fetch(
+      `https://graph.instagram.com/v19.0/me?fields=id,username,name,profile_picture_url&access_token=${accessToken}`
     );
-    const pagesData = await pagesResponse.json();
+    const profileData = await profileResponse.json();
 
-    if (!pagesData.data || pagesData.data.length === 0) {
-      console.error("No pages found for this user.");
-      return NextResponse.redirect(new URL("/onboarding?error=no_pages_found", req.url));
+    if (profileData.error) {
+      console.error("Profile Fetch Error:", profileData.error);
+      return NextResponse.redirect(new URL("/onboarding?error=profile_fetch_failed", req.url));
     }
 
-    // Find the first page with a linked Instagram Business Account
-    const pageWithIg = pagesData.data.find((page: any) => page.instagram_business_account);
-
-    if (!pageWithIg) {
-      console.error("No Instagram Business Account linked to the user's Facebook pages.");
-      return NextResponse.redirect(new URL("/onboarding?error=no_ig_business_account", req.url));
-    }
-
-    const igAccount = pageWithIg.instagram_business_account;
-    const igUsername = igAccount.username;
+    const igUsername = profileData.username;
 
     // 3. Return to onboarding with success state and data
     const response = NextResponse.redirect(

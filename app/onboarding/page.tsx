@@ -48,7 +48,7 @@ export default function OnboardingPage() {
     
     const clientId = process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_ID;
     const redirectUri = process.env.NEXT_PUBLIC_INSTAGRAM_REDIRECT_URI;
-    const scope = "instagram_basic,instagram_manage_insights,pages_show_list,public_profile";
+    const scope = "instagram_business_basic,instagram_business_content_publish,instagram_business_manage_comments";
     
     if (!clientId || !redirectUri) {
       console.error("Instagram API credentials not configured.");
@@ -56,7 +56,7 @@ export default function OnboardingPage() {
       return;
     }
 
-    const authUrl = `https://www.facebook.com/v19.0/dialog/oauth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code`;
+    const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code`;
     
     window.location.href = authUrl;
   };
