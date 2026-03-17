@@ -61,9 +61,12 @@ export default function OnboardingPage() {
       return;
     }
 
-    // Fixed: removed encodeURIComponent from redirectUri
-    // Instagram compares the redirect_uri as plain text against what is saved in the dashboard
-    const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`;
+    // Clean the redirect URI to ensure no trailing slash
+    const cleanRedirectUri = redirectUri.endsWith("/") ? redirectUri.slice(0, -1) : redirectUri;
+
+    // Fixed: Re-added encodeURIComponent. It MUST be encoded for the browser to send it correctly,
+    // but the VALUE after decoding must match the dashboard exactly.
+    const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(cleanRedirectUri)}&scope=${scope}&response_type=code`;
 
     window.location.href = authUrl;
   };
