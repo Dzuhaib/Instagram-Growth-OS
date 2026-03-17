@@ -30,6 +30,11 @@ export default function OnboardingPage() {
     const stepParam = params.get("step");
     const handleParam = params.get("handle");
 
+    // Reset connecting state whenever we land on the page with params
+    if (params.get("method") === "instagram" || params.get("error")) {
+      setConnecting(false);
+    }
+
     if (params.get("method") === "instagram") {
       if (stepParam === "4") {
         if (handleParam) {
@@ -40,7 +45,18 @@ export default function OnboardingPage() {
       } else {
         setStep(3);
       }
+      
+      // Clear URL params to prevent double-processing on refresh
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
+
+    // Load persisted data if available (to prevent data loss on redirect)
+    const savedName = localStorage.getItem("growth_os_name");
+    const savedNiche = localStorage.getItem("growth_os_niche");
+    const savedGoal = localStorage.getItem("growth_os_goal");
+    if (savedName) setName(savedName);
+    if (savedNiche) setNiche(savedNiche);
+    if (savedGoal) setGoal(savedGoal);
   }, []);
 
   const handleConnect = () => {
@@ -60,6 +76,11 @@ export default function OnboardingPage() {
       setConnecting(false);
       return;
     }
+
+    // Persist data before redirecting to prevent loss
+    localStorage.setItem("growth_os_name", name);
+    localStorage.setItem("growth_os_niche", niche);
+    localStorage.setItem("growth_os_goal", goal);
 
     // Use the static redirectUri from env exactly as it is (assuming it's correctly set in Vercel/Local)
     // We encode it because it's a parameter in a query string.
