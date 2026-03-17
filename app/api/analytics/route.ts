@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -16,8 +17,42 @@ export async function POST(req: Request) {
   try {
     const { timeRange, niche } = await req.json();
 
+    const cookieStore = await cookies();
+    const token = cookieStore.get("ig_access_token")?.value;
+
+    let postsSummary = "No real posts found or Instagram account not connected.";
+    let recentPosts = [];
+
+    if (token) {
+      try {
+        const url = `https://graph.instagram.com/v25.0/me/media?fields=id,caption,media_type,comments_count,like_count,timestamp,thumbnail_url,media_url,permalink&limit=15&access_token=${token}`;
+        const igRes = await fetch(url);
+        if (igRes.ok) {
+          const igData = await igRes.json();
+          if (igData.data && igData.data.length > 0) {
+            recentPosts = igData.data.map((p: any) => ({
+              id: p.id,
+              caption: (p.caption || "No caption").substring(0, 100) + "...",
+              format: p.media_type === "VIDEO" ? "Reel" : p.media_type === "CAROUSEL_ALBUM" ? "Carousel" : "Image",
+              likes: p.like_count || 0,
+              comments: p.comments_count || 0,
+              date: new Date(p.timestamp).toLocaleDateString(),
+            }));
+            postsSummary = `User's real recent posts:\n` + JSON.stringify(recentPosts, null, 2);
+          }
+        }
+      } catch (err) {
+        console.error("IG fetch error in analytics:", err);
+      }
+    }
+
     const prompt = `You are an AI Instagram Analyst. 
 Generate realistic analytics data for a user in the "${niche || "general"}" niche over the last ${timeRange}.
+Here is their real recent content data:
+---
+${postsSummary}
+---
+Use their real recent posts for the "posts" array. If they have real posts, calculate realistic reach, engagement rates, and shares based on their actual likes/comments. Randomly flag a few of their best performing real posts as "aiOptimized": true and others as false. If they have no real posts, generate 5 realistic dummy ones.
 Respond strictly in valid JSON format with the following structure:
 {
   "summary": [
@@ -28,12 +63,7 @@ Respond strictly in valid JSON format with the following structure:
   ],
   "reachData": [
     { "date": "Oct 1", "nonFollowers": 45000, "followers": 12000 },
-    { "date": "Oct 2", "nonFollowers": 46000, "followers": 12500 },
-    { "date": "Oct 3", "nonFollowers": 47000, "followers": 13000 },
-    { "date": "Oct 4", "nonFollowers": 48000, "followers": 13500 },
-    { "date": "Oct 5", "nonFollowers": 49000, "followers": 14000 },
-    { "date": "Oct 6", "nonFollowers": 50000, "followers": 14500 },
-    { "date": "Oct 7", "nonFollowers": 51000, "followers": 15000 }
+    ... 7 days worth
   ],
   "formatData": [
     { "name": "Reels", "value": 65 },
@@ -42,28 +72,15 @@ Respond strictly in valid JSON format with the following structure:
   ],
   "engagementData": [
     { "date": "Oct 1", "rate": 5.2 },
-    { "date": "Oct 2", "rate": 5.3 },
-    { "date": "Oct 3", "rate": 5.4 },
-    { "date": "Oct 4", "rate": 5.5 },
-    { "date": "Oct 5", "rate": 5.6 },
-    { "date": "Oct 6", "rate": 5.7 },
-    { "date": "Oct 7", "rate": 5.8 }
+    ... 7 days worth
   ],
   "followerData": [
     { "date": "Oct 1", "gained": 120, "lost": 15 },
-    { "date": "Oct 2", "gained": 130, "lost": 16 },
-    { "date": "Oct 3", "gained": 140, "lost": 17 },
-    { "date": "Oct 4", "gained": 150, "lost": 18 },
-    { "date": "Oct 5", "gained": 160, "lost": 19 },
-    { "date": "Oct 6", "gained": 170, "lost": 20 },
-    { "date": "Oct 7", "gained": 180, "lost": 21 }
+    ... 7 days worth
   ],
   "posts": [
-    { "id": 1, "thumbnail": "🔥", "caption": "Caption text...", "format": "Reel", "date": "2d ago", "reach": "45K", "engagement": "8.2%", "shares": 1200, "aiOptimized": true },
-    { "id": 2, "thumbnail": "✨", "caption": "Another caption...", "format": "Carousel", "date": "3d ago", "reach": "30K", "engagement": "7.5%", "shares": 800, "aiOptimized": false },
-    { "id": 3, "thumbnail": "💡", "caption": "Third post caption...", "format": "Image", "date": "4d ago", "reach": "20K", "engagement": "6.0%", "shares": 500, "aiOptimized": true },
-    { "id": 4, "thumbnail": "🚀", "caption": "Fourth post caption...", "format": "Reel", "date": "5d ago", "reach": "50K", "engagement": "9.0%", "shares": 1500, "aiOptimized": true },
-    { "id": 5, "thumbnail": "🌟", "caption": "Fifth post caption...", "format": "Carousel", "date": "6d ago", "reach": "35K", "engagement": "7.8%", "shares": 900, "aiOptimized": false }
+    { "id": 1, "thumbnail": "🔥", "caption": "Caption text...", "format": "Reel", "date": "10/10/2025", "reach": "45K", "engagement": "8.2%", "shares": 1200, "aiOptimized": true },
+    ... (Use real posts if available)
   ]
 }
 Do not wrap JSON in markdown.`;

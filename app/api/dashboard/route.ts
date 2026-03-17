@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -16,9 +17,42 @@ export async function POST(req: Request) {
   try {
     const { niche, goal } = await req.json();
 
+    const cookieStore = await cookies();
+    const token = cookieStore.get("ig_access_token")?.value;
+
+    let postsSummary = "The user has no connected account or no posts yet.";
+    let recentPosts = [];
+
+    if (token) {
+      // Attempt to fetch real media
+      try {
+        const url = `https://graph.instagram.com/v25.0/me/media?fields=id,caption,media_type,comments_count,like_count,timestamp,thumbnail_url,media_url,permalink&limit=15&access_token=${token}`;
+        const igRes = await fetch(url);
+        if (igRes.ok) {
+          const igData = await igRes.json();
+          if (igData.data && igData.data.length > 0) {
+            recentPosts = igData.data.map((p: any) => ({
+              type: p.media_type,
+              caption: (p.caption || "").substring(0, 150) + "...",
+              likes: p.like_count || 0,
+              comments: p.comments_count || 0,
+              date: p.timestamp,
+            }));
+            postsSummary = `User's last ${recentPosts.length} posts:\n` + JSON.stringify(recentPosts, null, 2);
+          }
+        }
+      } catch (err) {
+        console.error("IG fetch error in dashboard:", err);
+      }
+    }
+
     const prompt = `You are an AI Instagram Growth Engine.
 Generate a dashboard overview for a user in the "${niche}" niche with the goal of "${goal}".
-Provide realistic metrics, reach velocity data for a chart, an optimal posting schedule for the next 3 slots, and 4 specific AI recommendations.
+Here is data from their actual recent Instagram posts (use this to base your recommendations and metrics):
+---
+${postsSummary}
+---
+Provide realistic metrics based on their actual engagement (extrapolate reach from likes/comments if needed), reach velocity data for a chart, an optimal posting schedule for the next 3 slots, and 4 specific AI recommendations based EXACTLY on what they are currently posting vs what they should be.
 
 Respond strictly in valid JSON format with the following structure:
 {
@@ -43,7 +77,7 @@ Respond strictly in valid JSON format with the following structure:
       "type": "Hook Fix",
       "impact": "High",
       "title": "Switch to outcome-led hooks",
-      "desc": "Your last 3 Reels started with 'Here is how to...'. Our data shows hooks starting with 'I tried X for 30 days...' perform 4x better in your niche.",
+      "desc": "Your last Reel started with... but our data shows hooks starting with... perform 4x better in your niche.",
       "action": "View Hook Templates",
       "color": "var(--accent-pink)"
     },

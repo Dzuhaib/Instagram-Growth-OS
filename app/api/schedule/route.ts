@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -16,31 +17,61 @@ export async function POST(req: Request) {
   try {
     const { niche, goal, format } = await req.json();
 
+    const cookieStore = await cookies();
+    const token = cookieStore.get("ig_access_token")?.value;
+
+    let postsSummary = "No real posts found or Instagram account not connected.";
+    let recentPosts = [];
+
+    if (token) {
+      try {
+        const url = `https://graph.instagram.com/v25.0/me/media?fields=id,caption,media_type,comments_count,like_count,timestamp,thumbnail_url,media_url,permalink&limit=15&access_token=${token}`;
+        const igRes = await fetch(url);
+        if (igRes.ok) {
+          const igData = await igRes.json();
+          if (igData.data && igData.data.length > 0) {
+            recentPosts = igData.data.map((p: any) => ({
+              caption: (p.caption || "No caption").substring(0, 100) + "...",
+              format: p.media_type === "VIDEO" ? "Reel" : p.media_type === "CAROUSEL_ALBUM" ? "Carousel" : "Image",
+              likes: p.like_count || 0,
+              comments: p.comments_count || 0,
+            }));
+            postsSummary = `User's real recent posts:\n` + JSON.stringify(recentPosts, null, 2);
+          }
+        }
+      } catch (err) {
+        console.error("IG fetch error in schedule:", err);
+      }
+    }
+
     const prompt = `You are an Instagram algorithm expert.
 Niche: ${niche || "General"}
 Goal: ${goal || "Growth"}
 Format: ${format || "Reel"}
-
-Generate a personalized posting schedule matrix.
+Here is the user's recent content data:
+---
+${postsSummary}
+---
+Generate a personalized posting schedule matrix. Consider their past content performance if available to determine the best times and content ideas. Include a specific content idea for the "nextWindow" that they should post.
 Respond strictly in valid JSON format with the following structure:
 {
   "stats": [
-    { "label": "Label 1", "value": "Value 1", "sub": "Sub 1", "icon": "Video" | "Sparkles" | "AlertTriangle" },
-    { "label": "Label 2", "value": "Value 2", "sub": "Sub 2", "icon": "Video" | "Sparkles" | "AlertTriangle" },
-    { "label": "Label 3", "value": "Value 3", "sub": "Sub 3", "icon": "Video" | "Sparkles" | "AlertTriangle" }
+    { "label": "Engagement Rate", "value": "5.2%", "sub": "Average for the week", "icon": "Sparkles" },
+    { "label": "New Followers", "value": "150", "sub": "Last 7 days", "icon": "Users" },
+    { "label": "Views", "value": "1,200", "sub": "Last 30 days", "icon": "Video" }
   ],
   "timeSlots": [
     { "time": "09:00", "scores": [30, 45, 60, 40, 50, 85, 90] },
-    { "time": "12:00", ... },
-    { "time": "15:00", ... },
-    { "time": "18:00", ... },
-    { "time": "20:00", ... }
+    { "time": "12:00", "scores": [80, 75, 60, 40, 50, 85, 90] },
+    { "time": "15:00", "scores": [50, 45, 60, 40, 50, 85, 90] },
+    { "time": "18:00", "scores": [90, 85, 70, 60, 50, 85, 90] },
+    { "time": "20:00", "scores": [30, 45, 60, 40, 50, 85, 90] }
   ],
   "nextWindow": "Today at 18:00",
-  "nextReason": "Description of why today at this time is good.",
+  "nextReason": "Description of why today at this time is good. Include a specific content idea here they should post (e.g., 'Post a 7-second reel about XYZ').",
   "nuances": [
-    { "title": "Reels", "text": "Reels perform 45% better when..." },
-    { "title": "Carousels", "text": "Carousels perform best mid-day..." }
+    { "title": "Hooks", "text": "Start with XYZ pattern..." },
+    { "title": "Timing", "text": "Post 10 minutes before peak..." }
   ]
 }
 
