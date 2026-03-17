@@ -13,44 +13,46 @@ export async function GET(req: Request) {
   const redirectUri = process.env.NEXT_PUBLIC_INSTAGRAM_REDIRECT_URI;
 
   try {
-    // 1. Exchange code for short-lived access token
-    const formData = new FormData();
-    formData.append("client_id", clientId || "");
-    formData.append("client_secret", clientSecret || "");
-    formData.append("grant_type", "authorization_code");
-    formData.append("redirect_uri", redirectUri || "");
-    formData.append("code", code);
-
-    const tokenResponse = await fetch("https://api.instagram.com/oauth/access_token", {
-      method: "POST",
-      body: formData,
-    });
-
+    // 1. Exchange code for Facebook User Access Token
+    const tokenUrl = `https://graph.facebook.com/v19.0/oauth/access_token?client_id=${clientId}&client_secret=${clientSecret}&redirect_uri=${encodeURIComponent(redirectUri || "")}&code=${code}`;
+    const tokenResponse = await fetch(tokenUrl);
     const tokenData = await tokenResponse.json();
 
     if (tokenData.error) {
-      console.error("Instagram Token Error:", tokenData.error);
+      console.error("Facebook Token Error:", tokenData.error);
       return NextResponse.redirect(new URL("/onboarding?error=token_exchange_failed", req.url));
     }
 
     const accessToken = tokenData.access_token;
-    const userId = tokenData.user_id;
 
-    // 2. Fetch User Profile (to get the handle/username)
-    const profileResponse = await fetch(
-      `https://graph.instagram.com/me?fields=id,username&access_token=${accessToken}`
+    // 2. Fetch User's Pages to find the Linked Instagram Business Account
+    const pagesResponse = await fetch(
+      `https://graph.facebook.com/v19.0/me/accounts?fields=instagram_business_account{id,username,name,profile_picture_url}&access_token=${accessToken}`
     );
-    const profileData = await profileResponse.json();
+    const pagesData = await pagesResponse.json();
+
+    if (!pagesData.data || pagesData.data.length === 0) {
+      console.error("No pages found for this user.");
+      return NextResponse.redirect(new URL("/onboarding?error=no_pages_found", req.url));
+    }
+
+    // Find the first page with a linked Instagram Business Account
+    const pageWithIg = pagesData.data.find((page: any) => page.instagram_business_account);
+
+    if (!pageWithIg) {
+      console.error("No Instagram Business Account linked to the user's Facebook pages.");
+      return NextResponse.redirect(new URL("/onboarding?error=no_ig_business_account", req.url));
+    }
+
+    const igAccount = pageWithIg.instagram_business_account;
+    const igUsername = igAccount.username;
 
     // 3. Return to onboarding with success state and data
-    // In a real app, you would save accessToken to a database here.
-    // For now, we'll pass the username back to be stored in localStorage.
     const response = NextResponse.redirect(
-      new URL(`/onboarding?step=4&method=instagram&handle=${profileData.username}`, req.url)
+      new URL(`/onboarding?step=4&method=instagram&handle=${igUsername}`, req.url)
     );
     
-    // We could set a cookie here for the token, but for now let's just use the URL/LocalStorage approach
-    // to match the existing front-end architecture.
+    // Store access token in a secure cookie
     response.cookies.set("ig_access_token", accessToken, { 
       httpOnly: true, 
       secure: process.env.NODE_ENV === "production",
