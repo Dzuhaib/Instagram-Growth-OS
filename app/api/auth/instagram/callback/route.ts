@@ -12,6 +12,11 @@ export async function GET(req: Request) {
   const clientSecret = process.env.INSTAGRAM_CLIENT_SECRET;
   const redirectUri = process.env.NEXT_PUBLIC_INSTAGRAM_REDIRECT_URI;
 
+  console.log("=== Instagram Callback Start ===");
+  console.log("clientId present:", !!clientId);
+  console.log("clientSecret present:", !!clientSecret);
+  console.log("redirectUri:", redirectUri);
+
   if (!clientId || !clientSecret || !redirectUri) {
     console.error("Missing Instagram environment variables.");
     return NextResponse.redirect(
@@ -28,6 +33,8 @@ export async function GET(req: Request) {
     formData.append("redirect_uri", redirectUri);
     formData.append("code", code);
 
+    console.log("Exchanging code for token...");
+
     const tokenResponse = await fetch(
       "https://api.instagram.com/oauth/access_token",
       {
@@ -40,39 +47,48 @@ export async function GET(req: Request) {
     );
 
     const tokenData = await tokenResponse.json();
+    console.log("Token response status:", tokenResponse.status);
+    console.log("Token data keys:", Object.keys(tokenData));
 
     if (tokenData.error || !tokenData.access_token) {
-      console.error("Instagram Token Error:", tokenData);
+      console.error("Instagram Token Error:", JSON.stringify(tokenData));
       return NextResponse.redirect(
         new URL("/onboarding?error=token_exchange_failed", req.url)
       );
     }
 
     const accessToken = tokenData.access_token;
+    console.log("Token exchange success. Fetching profile...");
 
-    // Step 2: Fetch Instagram Business Profile (v25.0 matches Meta Dashboard setting)
+    // Step 2: Fetch profile — try multiple field combos for compatibility
+    // Fields available under instagram_business_basic: id, name, username, biography, etc.
     const profileResponse = await fetch(
-      `https://graph.instagram.com/v25.0/me?fields=id,username,name&access_token=${accessToken}`
+      `https://graph.instagram.com/v25.0/me?fields=id,name,username,biography&access_token=${accessToken}`
     );
     const profileData = await profileResponse.json();
 
-    console.log("Profile API Response:", JSON.stringify(profileData));
+    console.log("Profile response status:", profileResponse.status);
+    console.log("Profile data:", JSON.stringify(profileData));
 
-    if (profileData.error || !profileData.username) {
-      console.error("Profile Fetch Error:", JSON.stringify(profileData));
-      // Log token too to verify it wasn't empty (don't log in production)
-      console.error("Access Token prefix:", accessToken?.substring(0, 20));
+    if (profileData.error) {
+      console.error("Profile API Error:", JSON.stringify(profileData.error));
       return NextResponse.redirect(
         new URL("/onboarding?error=profile_fetch_failed", req.url)
       );
     }
 
-    const igUsername = profileData.username;
+    // Use username if available, fall back to name, then to "user_" + id
+    const igUsername =
+      profileData.username ||
+      profileData.name?.replace(/\s+/g, "_").toLowerCase() ||
+      `user_${profileData.id}`;
+
+    console.log("Resolved username:", igUsername);
 
     // Step 3: Redirect back to onboarding with success state
     const response = NextResponse.redirect(
       new URL(
-        `/onboarding?step=4&method=instagram&handle=${igUsername}`,
+        `/onboarding?step=4&method=instagram&handle=${encodeURIComponent(igUsername)}`,
         req.url
       )
     );
